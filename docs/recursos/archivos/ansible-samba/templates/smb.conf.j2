@@ -1,0 +1,19 @@
+# Ejemplo para un servidor standalone de laboratorio.
+[global]
+   workgroup = WORKGROUP
+   server role = standalone server
+   security = user
+   map to guest = Never
+   server min protocol = SMB2
+   smb ports = 445
+   load printers = no
+   disable spoolss = yes
+
+[grupo_asir]
+   path = {{ recurso_aso }}
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = @{{ grupo_aso }}
+   create mask = 0660
+   directory mask = 2770

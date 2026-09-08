@@ -1,0 +1,91 @@
+---
+- name: Configurar Samba de laboratorio sin almacenar contrasenas
+  hosts: srv_aso
+  become: true
+  vars:
+    grupo_aso: grupo_asir
+    recurso_aso: /srv/grupo_asir
+    usuarios_aso:
+      - alumno1
+      - profesor
+
+  tasks:
+    - name: Comprobar familia de sistema
+      ansible.builtin.assert:
+        that: ansible_facts.os_family == 'Debian'
+        fail_msg: Este ejemplo requiere Debian o Ubuntu en un servidor de laboratorio.
+
+    - name: Instalar paquetes
+      ansible.builtin.apt:
+        name: [samba, smbclient, acl, rsync]
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Crear grupo
+      ansible.builtin.group:
+        name: "{{ grupo_aso }}"
+        state: present
+
+    - name: Crear cuentas Linux del servicio
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: "{{ grupo_aso }}"
+        append: true
+        shell: /usr/sbin/nologin
+        create_home: true
+        state: present
+      loop: "{{ usuarios_aso }}"
+
+    - name: Preparar directorio compartido
+      ansible.builtin.file:
+        path: "{{ recurso_aso }}"
+        state: directory
+        owner: root
+        group: "{{ grupo_aso }}"
+        mode: "2770"
+
+    - name: Configurar ACL de acceso y por defecto
+      ansible.posix.acl:
+        path: "{{ recurso_aso }}"
+        entity: "{{ grupo_aso }}"
+        etype: group
+        permissions: rwx
+        default: "{{ item }}"
+        state: present
+      loop: [false, true]
+
+    - name: Instalar configuracion validada
+      ansible.builtin.template:
+        src: smb.conf.j2
+        dest: /etc/samba/smb.conf
+        owner: root
+        group: root
+        mode: "0644"
+        backup: true
+        validate: /usr/bin/testparm -s %s
+      notify: Reiniciar Samba
+
+    - name: Activar servicio
+      ansible.builtin.service:
+        name: smbd
+        state: started
+        enabled: true
+
+    - name: Aplicar reinicio pendiente antes de comprobar
+      ansible.builtin.meta: flush_handlers
+
+    - name: Verificar estado del servicio
+      ansible.builtin.command: systemctl is-active smbd
+      changed_when: false
+      when: not ansible_check_mode
+
+    - name: Recordar alta de credenciales
+      ansible.builtin.debug:
+        msg: Ejecuta smbpasswd -a de forma interactiva para las cuentas nuevas y prueba desde el cliente.
+
+  handlers:
+    - name: Reiniciar Samba
+      ansible.builtin.service:
+        name: smbd
+        state: restarted
