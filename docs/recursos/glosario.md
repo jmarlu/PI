@@ -25,14 +25,29 @@
 | Backup | Copia de seguridad con alcance y destino definidos |
 | RPO | Pérdida de datos tolerable, expresada como intervalo temporal |
 | RTO | Tiempo objetivo de recuperación; debe compararse con la prueba |
-| ACL | Lista de control de acceso que complementa permisos POSIX |
-| setgid | En un directorio, facilita heredar el grupo en elementos nuevos |
 | Realm | Dominio de autenticación elegido en Proxmox |
-| systemd | Gestor del sistema y de servicios en el Linux del proyecto |
+| VirtIO | Interfaz de dispositivos orientada a virtualización, con soporte en el invitado |
+| Ballooning | Ajuste de memoria utilizable de una VM cuando el invitado lo soporta |
+| QEMU Guest Agent | Agente dentro de la VM para operaciones coordinadas con el nodo |
+| LVM-thin | Backend de volúmenes de bloques con asignación de espacio bajo demanda |
+| Dominio de fallo | Recursos que pueden perderse por una misma causa |
 | Idempotencia | Repetir una configuración ya satisfecha sin cambios innecesarios |
+| Convergencia | Aplicación que lleva el estado real hacia el declarado |
+| Deriva | Diferencia entre configuración declarada y estado real |
+| Controlador Ansible | Equipo que interpreta el playbook y dirige las operaciones |
+| Nodo gestionado | Destino seleccionado por el inventario y el play |
 | Playbook | Conjunto de tareas Ansible expresado en YAML |
+| Play | Selección de destinos y tareas dentro de un playbook |
+| Módulo | Implementación de una operación con parámetros y resultados definidos |
 | Inventario Ansible | Destinos y variables de conexión, distinto del inventario de hardware |
+| Facts | Información descubierta del destino, no valores escritos como previsión |
+| Register | Captura del resultado estructurado de una tarea |
+| Jinja | Motor de plantillas utilizado para renderizar valores y estructuras |
 | Handler | Tarea Ansible activada por una notificación de cambio |
+| Rol | Organización reutilizable de tareas y recursos relacionados |
+| Colección | Paquete con módulos, plugins, roles u otros recursos bajo un namespace |
+| Check mode | Simulación limitada por el soporte y dependencias de cada tarea |
+| Vault | Cifrado de datos en reposo; no evita toda exposición durante la ejecución |
 | Become | Elevación de privilegios en Ansible |
 | Markdown | Texto estructurado para la documentación |
 | Commit | Versión registrada en el historial Git |
@@ -41,4 +56,4 @@
 | Hito | Punto de revisión con entregables y criterios verificables |
 
 Amplía los conceptos en las [guías de Proxmox](../proxmox/conceptos.md)
-y [automatización](../linux/automatizacion.md).
+y [Ansible](../ansible/fundamentos.md).

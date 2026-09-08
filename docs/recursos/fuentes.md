@@ -14,6 +14,11 @@ de tu equipo anfitrión y de VirtualBox cuando lo utilices, no solo páginas gen
 - [Almacenamiento](https://pve.proxmox.com/pve-docs/chapter-pvesm.html).
 - [Máquinas virtuales](https://pve.proxmox.com/pve-docs/chapter-qm.html).
 - [Contenedores](https://pve.proxmox.com/pve-docs/chapter-pct.html).
+- [Sistema base, redes y ZFS](https://pve.proxmox.com/pve-docs/chapter-sysadmin.html).
+- [Configuración distribuida pmxcfs](https://pve.proxmox.com/pve-docs/chapter-pmxcfs.html).
+- [Usuarios, realms y permisos](https://pve.proxmox.com/pve-docs/chapter-pveum.html).
+- [Firewall](https://pve.proxmox.com/pve-docs/chapter-pve-firewall.html).
+- [Integración cloud-init](https://pve.proxmox.com/pve-docs/cloud-init.html).
 - [Backups y restauración](https://pve.proxmox.com/pve-docs/chapter-vzdump.html).
 - [KVM: invitados anidados](https://docs.kernel.org/virt/kvm/x86/running-nested-guests.html).
 - [Cloud-init: limpieza de una base](https://docs.cloud-init.io/en/latest/reference/cli.html#clean).
@@ -24,14 +29,26 @@ de tu equipo anfitrión y de VirtualBox cuando lo utilices, no solo páginas gen
 - [Red NAT y solo-anfitrión](https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/networkingdetails.html).
 - [Gestión de las máquinas](https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/working-with-vms.html).
 
-## Linux y automatización
+## Ansible
 
-- [Samba: smb.conf](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html).
-- [Samba: smbpasswd](https://www.samba.org/samba/docs/current/man-html/smbpasswd.8.html).
+- [Instalación y requisitos](https://docs.ansible.com/projects/ansible/latest/installation_guide/intro_installation.html).
+- [Inventarios](https://docs.ansible.com/projects/ansible/latest/inventory_guide/intro_inventory.html).
+- [Variables](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_variables.html).
+- [Facts](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_vars_facts.html).
 - [Ansible: playbooks](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_intro.html).
 - [Ansible: templates y validación](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/template_module.html).
-- [Ansible: módulo ACL y ejemplos oficiales](https://docs.ansible.com/projects/ansible/latest/collections/ansible/posix/acl_module.html).
+- [Handlers](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_handlers.html).
+- [Errores](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_error_handling.html).
+- [Check y diff](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_checkmode.html).
+- [Roles](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html).
+- [Colecciones](https://docs.ansible.com/projects/ansible/latest/collections_guide/collections_installing.html).
 - [Ansible Vault](https://docs.ansible.com/projects/ansible/latest/vault_guide/index.html).
+
+## Herramientas de la práctica
+
+Referencias de consulta para ejecutar y validar los entregables; no constituyen
+un bloque teórico de administración Linux.
+
 - [Manual GNU Bash](https://www.gnu.org/software/bash/manual/bash.html).
 - [Manual de rsync](https://download.samba.org/pub/rsync/rsync.1).
 - [Nmap: estados de puertos](https://nmap.org/book/man-port-scanning-basics.html).

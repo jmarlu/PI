@@ -1,0 +1,115 @@
+---
+- name: Renderizar y validar un diseno de laboratorio
+  hosts: laboratorio
+  gather_facts: false
+  become: false
+  vars_files:
+    - variables.yml
+  tasks:
+    - name: Comprobar el contexto local del ejercicio
+      ansible.builtin.assert:
+        that:
+          - inventory_hostname == 'localhost'
+          - ansible_connection == 'local'
+        fail_msg: "Este ejercicio solo admite localhost con conexion local"
+
+    - name: Validar estructura y tipos
+      ansible.builtin.assert:
+        that:
+          - fase is string
+          - fase in ['inventario', 'despliegue', 'validacion']
+          - nodo is mapping
+          - nodo.nombre is string
+          - nodo.nombre | length > 0
+          - nodo.ram_mib is integer
+          - nodo.ram_mib > 0
+          - reserva_nodo_mib is integer
+          - reserva_nodo_mib >= 0
+          - invitados is sequence
+          - invitados is not string
+          - invitados is not mapping
+          - invitados | length == 2
+        fail_msg: "Revisa los tipos y los dos invitados de variables.yml"
+
+    - name: Validar los datos de cada invitado
+      ansible.builtin.assert:
+        that:
+          - item is mapping
+          - item.nombre is string
+          - item.nombre | length > 0
+          - item.ram_mib is integer
+          - item.ram_mib > 0
+        fail_msg: "Cada invitado necesita nombre y RAM positiva en MiB"
+      loop: "{{ invitados }}"
+
+    - name: Validar presupuesto y nombres unicos
+      ansible.builtin.assert:
+        that:
+          - (invitados | map(attribute='nombre') | unique | list | length) == (invitados | length)
+          - nodo.ram_mib >= (invitados | map(attribute='ram_mib') | sum) + reserva_nodo_mib
+        fail_msg: "Presupuesto de RAM insuficiente o nombres de invitados duplicados"
+
+    - name: Inspeccionar el destino sin seguir enlaces
+      ansible.builtin.stat:
+        path: "{{ playbook_dir }}/salida"
+        follow: false
+      register: destino_salida
+
+    - name: Rechazar una salida que no sea un directorio real
+      ansible.builtin.assert:
+        that:
+          - not destino_salida.stat.exists or (destino_salida.stat.isdir | default(false) and not destino_salida.stat.islnk | default(false))
+        fail_msg: "salida debe ser un directorio propio, no un archivo ni un enlace"
+
+    - name: Inspeccionar el informe sin seguir enlaces
+      ansible.builtin.stat:
+        path: "{{ playbook_dir }}/salida/informe.md"
+        follow: false
+      register: destino_informe
+
+    - name: Rechazar un informe que no sea un archivo real
+      ansible.builtin.assert:
+        that:
+          - not destino_informe.stat.exists or (destino_informe.stat.isreg | default(false) and not destino_informe.stat.islnk | default(false) and destino_informe.stat.nlink | default(1) == 1)
+        fail_msg: "El informe no puede ser un enlace ni otro tipo de objeto"
+
+    - name: Mantener el directorio privado de salida
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/salida"
+        state: directory
+        mode: "0700"
+
+    - name: Renderizar el informe del laboratorio
+      ansible.builtin.template:
+        src: informe.md.j2
+        dest: "{{ playbook_dir }}/salida/informe.md"
+        mode: "0600"
+      notify: Informar de la actualizacion
+
+    # En check mode el informe podria no existir: no se presenta como validado.
+    - name: Leer el informe realmente escrito
+      ansible.builtin.slurp:
+        src: "{{ playbook_dir }}/salida/informe.md"
+      register: informe
+      when: not ansible_check_mode
+
+    - name: Verificar los datos generales del informe
+      ansible.builtin.assert:
+        that:
+          - "('# Nodo ' ~ nodo.nombre) in (informe.content | b64decode)"
+          - "('Fase: ' ~ fase) in (informe.content | b64decode)"
+          - "('Memoria asignada al nodo: ' ~ nodo.ram_mib ~ ' MiB') in (informe.content | b64decode)"
+      when: not ansible_check_mode
+
+    - name: Verificar cada invitado en el informe
+      ansible.builtin.assert:
+        that:
+          - "('- ' ~ item.nombre ~ ': ' ~ item.ram_mib ~ ' MiB') in (informe.content | b64decode)"
+      loop: "{{ invitados }}"
+      when: not ansible_check_mode
+
+  handlers:
+    - name: Informar de la actualizacion
+      ansible.builtin.debug:
+        msg: "Se ha actualizado el informe del laboratorio"
+

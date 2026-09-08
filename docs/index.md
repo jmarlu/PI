@@ -41,7 +41,20 @@ de ejecutar comandos.
 [![Interfaz de Proxmox VE, captura oficial](assets/proxmox-panel.png)](proxmox/interfaz.md)
 
 Captura de referencia: Proxmox Server Solutions GmbH. No representa tu instalación.
-La versión y los nombres del centro pueden ser distintos.
+La versión y los nombres de tu instalación pueden ser distintos.
+
+## Teoría y aplicación
+
+| Bloque | Contenido |
+|---|---|
+| [Teoría de Proxmox](proxmox/conceptos.md#recorrido-de-teoria) | Arquitectura, VM/LXC, recursos, redes, discos, clones y recuperación |
+| [Taller de Proxmox](proxmox/instalacion.md) | Interfaz, instalación, VirtualBox local y despliegue |
+| [Teoría de Ansible](ansible/fundamentos.md) | Estado deseado, inventarios, YAML, tareas, handlers, roles y pruebas |
+| [Laboratorio Ansible](ansible/laboratorio.md) | Ejecución local, idempotencia, deriva y validación de entradas |
+| [Entrega de automatización](proyecto/automatizacion.md) | Dos scripts Bash y Ansible aplicado al servicio del proyecto |
+
+Los contenidos de administración Linux se aplican en el servicio ASO de la
+práctica, sin un bloque teórico independiente de Linux, Samba o ACL en esta web.
 
 ## Trabajo semanal
 
@@ -49,5 +62,5 @@ Cada clase combina explicación, demostración, práctica, validación y documen
 Al terminar, publica un cambio significativo y comprueba que aparece en GitHub.
 Una incidencia también se documenta, con sus pruebas y el siguiente paso.
 
-Consulta las [explicaciones de cada día](clases/explicaciones.md),
+Consulta el [calendario de clases y sus materiales](clases/index.md),
 las [descargas](recursos/descargas.md) y la [evaluación y defensa](proyecto/evaluacion.md).

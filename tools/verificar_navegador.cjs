@@ -9,10 +9,14 @@ const output = process.env.SCREENSHOT_DIR || "/tmp/pi-web-capturas";
 fs.mkdirSync(output, { recursive: true });
 const routes = [
   "", "proyecto/primera-sesion/", "proyecto/practica/", "proyecto/evaluacion/",
-  "clases/", "clases/presentacion/", "clases/explicaciones/", "proxmox/conceptos/", "proxmox/interfaz/",
+  "clases/", "clases/presentacion/", "proxmox/conceptos/", "proxmox/interfaz/",
   "proxmox/instalacion/", "proxmox/virtualbox/", "proxmox/red-almacenamiento/",
-  "proxmox/plantillas/", "linux/servicio-aso/", "linux/automatizacion/",
-  "linux/copias/", "linux/pruebas/", "recursos/descargas/", "recursos/incidencias/",
+  "proxmox/plantillas/", "proxmox/arquitectura/", "proxmox/virtualizacion/",
+  "proxmox/recursos/", "proxmox/redes-teoria/", "proxmox/almacenamiento-teoria/",
+  "proxmox/clonado-teoria/", "proxmox/operacion-recuperacion/",
+  "ansible/fundamentos/", "ansible/inventario-conexion/", "ansible/variables-plantillas/",
+  "ansible/playbooks/", "ansible/organizacion-validacion/", "ansible/laboratorio/",
+  "proyecto/automatizacion/", "recursos/descargas/", "recursos/incidencias/",
   "recursos/glosario/", "recursos/fuentes/"
 ];
 
@@ -65,8 +69,15 @@ const routes = [
           }
           assert.ok(colored > 200, "Diagrama en blanco: " + route);
         }
-        if (route === "clases/explicaciones/") {
-          assert.equal(await page.locator('article h2[id^="s"]').count(), 33);
+        if (route === "clases/") {
+          const sessions = page.locator("article table").nth(1).locator("tbody tr");
+          assert.equal(await sessions.count(), 33);
+          for (let index = 0; index < 33; index++) {
+            const link = sessions.nth(index).locator("td").first().locator("a");
+            assert.equal(await link.innerText(), String(index + 1));
+            const destination = await link.getAttribute("href");
+            assert.ok(destination && !destination.includes("explicaciones"));
+          }
         }
         if (route === "proyecto/practica/") {
           const body = await page.locator("article").innerText();
@@ -75,18 +86,32 @@ const routes = [
           assert.ok(body.includes("Pregunta 2."));
           assert.ok(body.includes("Pregunta 3."));
         }
-        if (["", "proxmox/virtualbox/", "proyecto/practica/", "recursos/descargas/"].includes(route)) {
+        assert.equal(await page.locator('.md-sidebar--primary a[href*="/linux/"]').count(), 0);
+        assert.equal(await page.locator('a[href*="clases/explicaciones"]').count(), 0);
+        if (["", "clases/", "clases/presentacion/", "proxmox/virtualbox/", "proyecto/practica/", "recursos/descargas/",
+             "ansible/laboratorio/", "ansible/variables-plantillas/", "proxmox/recursos/"].includes(route)) {
           await page.screenshot({
             path: path.join(output, (route.replaceAll("/", "-") || "inicio") + viewport.width + ".png"),
-            fullPage: route !== "proyecto/practica/" && route !== "proxmox/virtualbox/"
+            fullPage: route === "" || route === "recursos/descargas/"
           });
         }
       }
 
+      await page.goto(new URL("clases/presentacion/", base).href);
+      await page.getByRole("link", { name: "calendario de las 33 sesiones y sus hitos" }).click();
+      await page.waitForURL("**/clases/");
+      await page.locator("article table").nth(1).locator("tbody tr").nth(26).locator("td a").first().click();
+      await page.waitForURL("**/ansible/inventario-conexion/");
+
+      const removed = await context.request.get(new URL("clases/explicaciones/", base).href);
+      assert.equal(removed.status(), 404);
+      const searchIndex = await (await context.request.get(new URL("search/search_index.json", base).href)).json();
+      assert.ok(searchIndex.docs.every(doc => !doc.location.startsWith("clases/explicaciones/")));
+
       await page.goto(base);
       if (viewport.width < 800) {
         await page.locator('.md-header label[for="__drawer"]').click();
-        await page.locator('.md-sidebar--primary').getByText("Conocer Proxmox", { exact: true }).first().click();
+        await page.locator('.md-sidebar--primary').getByText("Taller de Proxmox", { exact: true }).first().click();
         await page.locator('.md-sidebar--primary a[href$="proxmox/virtualbox/"]').click();
         await page.waitForURL("**/proxmox/virtualbox/");
       }
@@ -104,7 +129,7 @@ const routes = [
       await page.screenshot({ path: path.join(output, "busqueda-" + viewport.width + ".png") });
       await page.keyboard.press("Escape");
 
-      for (const name of ["plantilla-alumno.zip", "ansible-samba.zip", "SHA256SUMS.txt"]) {
+      for (const name of ["plantilla-alumno.zip", "ansible-samba.zip", "ansible-laboratorio.zip", "SHA256SUMS.txt"]) {
         const response = await context.request.get(new URL("recursos/archivos/" + name, base).href);
         assert.equal(response.status(), 200, name);
         assert.ok((await response.body()).length > 100, name);

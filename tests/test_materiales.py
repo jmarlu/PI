@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
@@ -180,9 +181,26 @@ class CourseTest(unittest.TestCase):
         self.assertIn("sistema anfitrion", practice)
         for text in ("dentro del Proxmox del centro", "VM del centro", "Tipo host"):
             self.assertNotIn(text, practice)
-        sessions = (ROOT / "docs/clases/explicaciones.md").read_text()
-        self.assertEqual(sessions.count("## Sesión "), 33)
+        sessions = (ROOT / "docs/clases/index.md").read_text()
+        numbers = re.findall(r"^\| \[(\d+)\]\(", sessions, re.MULTILINE)
+        self.assertEqual([int(number) for number in numbers], list(range(1, 34)))
         self.assertIn("100 horas", sessions)
+
+    def test_class_index_links_to_existing_materials(self):
+        sessions = (ROOT / "docs/clases/index.md").read_text()
+        destinations = re.findall(r"^\| \[\d+\]\(([^)]+)\)", sessions, re.MULTILINE)
+        self.assertEqual(len(destinations), 33)
+        for destination in destinations:
+            path = (ROOT / "docs/clases" / destination.split("#", 1)[0]).resolve()
+            with self.subTest(destination=destination):
+                self.assertTrue(path.is_relative_to(ROOT / "docs"))
+                self.assertTrue(path.is_file())
+
+    def test_explanations_page_and_references_are_removed(self):
+        self.assertFalse((ROOT / "docs/clases/explicaciones.md").exists())
+        for page in list((ROOT / "docs").rglob("*.md")) + [ROOT / "mkdocs.yml"]:
+            with self.subTest(page=page):
+                self.assertNotIn("explicaciones.md", page.read_text())
 
 
 if __name__ == "__main__":

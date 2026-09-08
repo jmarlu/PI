@@ -21,7 +21,7 @@ estructura departamental original, fuera de este sitio.
 - Web del profesor, independiente de los repositorios individuales del alumnado.
 - GitHub y Markdown como primera tarea; no se exige Pages al alumno.
 - 33 sesiones de 180 minutos y una hora final, dentro de las 100 horas de segundo.
-- Explicaciones adaptadas al alumno, sin notas privadas del docente.
+- Materiales adaptados al alumno, sin notas privadas del docente.
 - Inventario integrado en la práctica: tres preguntas, investigación y cálculos.
 - Modalidad física con permiso de borrado; alternativa en VirtualBox local,
   sin utilizar el Proxmox del centro. Servidor y cliente quedan dentro de Proxmox.
@@ -33,6 +33,44 @@ estructura departamental original, fuera de este sitio.
   carácter intermodular; el proyecto no se reduce a instalar una aplicación.
 
 ## Correcciones realizadas
+
+### Ampliación de teoría de la web
+
+- Siete capítulos nuevos de Proxmox: arquitectura, VM/LXC y anidación,
+  dimensionamiento, redes, almacenamiento, clonado e identidad, operación
+  y recuperación. El índice conceptual enlaza el recorrido completo.
+- Cinco capítulos de fundamentos y técnica Ansible, más un laboratorio guiado:
+  inventarios, conexión, YAML, variables, facts, plantillas, módulos, handlers,
+  errores, roles, colecciones, secretos y validación.
+- Ejemplos originales, cálculos, preguntas de aplicación y fuentes oficiales;
+  las respuestas se integran en la memoria existente, sin otra fase de inventario.
+- Eliminadas las cuatro páginas del antiguo directorio de teoría Linux y sus
+  enlaces. No queda un bloque teórico de administración Linux, Samba o ACL.
+- Servicio ASO, pruebas, dos scripts Bash y Ansible remoto conservados en la
+  práctica. El ejemplo Samba sigue siendo una descarga práctica opcional para
+  ese servicio, no un tema teórico ni sustituto de la adaptación del alumno.
+- Laboratorio Ansible local descargable, sin sudo ni conexión a servidores:
+  variables, informe Jinja, aserciones, handler y pruebas de deriva/idempotencia.
+- Calendario enlazado al temario sin añadir horas. Las sesiones del servicio
+  aplican contenidos de ASO; roles y cloud-init son profundización.
+- Conservada la decisión de dejar el calendario fuera del menú; sigue accesible
+  desde Inicio y desde la presentación del proyecto.
+- No se modifica la programación departamental ni se regeneran DOCX/PPTX.
+
+### Revisión de Clases
+
+- La comprobación inicial no detectó destinos ni anclas inexistentes.
+- Retirada la página de explicaciones diarias por indicación del usuario.
+- Sustituidos los 33 enlaces de sesión por destinos directos a la práctica,
+  los procedimientos y la teoría correspondiente.
+- Eliminadas las referencias al archivo retirado en Inicio y en MkDocs,
+  incluidas las entradas comentadas y la declaración fuera de navegación.
+- Actualizadas las pruebas para comprobar las 33 sesiones desde el calendario,
+  la ausencia de referencias obsoletas y la navegación desde la presentación.
+- Comprobado que la página retirada no permanece en el índice de búsqueda
+  ni en el sitio generado. ZIP de distribución regenerado.
+
+### Revisión previa conservada
 
 En la práctica original y en su adaptación web:
 - Alta interactiva de credenciales Samba, distinta de las cuentas Linux.
@@ -90,18 +128,23 @@ deben contrastarse al iniciar el curso.
 
 - Construcción MkDocs estricta completada y enlaces internos/anclas/descargas comprobados.
 - Probada también la construcción bajo una subruta equivalente a GitHub Pages.
-- 16 pruebas unitarias correctas: estructura, preservación de trabajo existente,
+- 22 pruebas unitarias correctas: estructura, preservación de trabajo existente,
   sintaxis Bash, copias reales en directorios temporales, fallos de rsync,
-  destinos recursivos, ZIP reproducible, enlaces y 33 sesiones.
+  destinos recursivos, ZIP reproducible, enlaces, 33 sesiones, navegación
+  teórica, contenido completo de la nueva descarga y enlaces del calendario.
 - Ejemplo Ansible validado con ansible-core 2.21.3 y ansible.posix 2.2.2,
   sin conexión a servidores ni ejecución de tareas de administración.
+- Laboratorio Ansible ejecutado en copias temporales: check sin crear salida,
+  primera aplicación, segunda sin cambios, permisos privados, handler,
+  cambio deseado, reparación de deriva, rechazo de presupuesto/fase/nombres
+  inválidos y rechazo de enlaces hacia archivos o directorios externos.
 - Coherencia comprobada entre la práctica original y la web y entre las cuatro
   herramientas originales y sus copias descargables.
 - Referencias externas comprobadas por HTTP; el manual GNU Bash devuelve 403
   a la consulta automatizada, por lo que ese acceso no se da por verificado.
 - Los DOCX/PPTX previos no se han regenerado: pueden conservar la modalidad
   anterior. La revisión vigente está en Markdown y en la web.
-- 21 páginas verificadas con Chromium/Playwright en 1440x1000 y 390x844:
+- 30 páginas verificadas con Chromium/Playwright en 1440x1000 y 390x844:
   navegación, menú móvil, búsqueda, descargas, imágenes y ausencia de
   desbordamiento horizontal del documento. Diagramas inspeccionados mediante
   DOM/CDP y comprobación de píxeles no vacíos; capturas revisadas visualmente.

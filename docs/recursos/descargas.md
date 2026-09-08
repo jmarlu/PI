@@ -18,6 +18,17 @@ Markdown en GitHub. Esta web es el material del profesor.
 
 ## Automatización del alumno
 
+### Aprender Ansible
+
+- [Laboratorio local de Ansible](archivos/ansible-laboratorio.zip).
+- [Guía de ejecución y pruebas](../ansible/laboratorio.md).
+
+Incluye inventario local, variables, playbook y plantilla. No conecta a servidores
+ni configura servicios: permite comprobar idempotencia y deriva en una carpeta
+de salida propia. No sustituye el playbook remoto obligatorio del proyecto.
+
+### Aplicar Ansible al servicio
+
 La plantilla incluye los dos scripts y un playbook **de inicio**, no una
 solución terminada. Es normal que sus documentos tengan apartados pendientes
 antes de hacer la práctica; esos pendientes no deben quedar en la entrega final.
@@ -33,7 +44,7 @@ con tu `ansible/` y adapta o integra lo necesario. No sobrescribas trabajo propi
 sin revisarlo. Conserva `templates/` junto a `playbook.yml`.
 
 El ejemplo reemplaza la configuración del Samba de laboratorio y no automatiza
-las contraseñas. Lee antes la [guía de automatización](../linux/automatizacion.md).
+las contraseñas. Lee antes los [requisitos de automatización](../proyecto/automatizacion.md).
 
 ## Herramientas de apoyo
 
@@ -67,7 +78,7 @@ Solo se autoriza la IP de tu servidor, no la subred del aula.
 ## Integridad de las descargas
 
 [Sumas SHA-256](archivos/SHA256SUMS.txt). Permiten detectar alteraciones accidentales,
-no certifican la seguridad ni la autoría del código. Para comprobar los dos ZIP,
+no certifican la seguridad ni la autoría del código. Para comprobar los ZIP,
 descárgalos junto con las sumas, manteniendo sus nombres:
 
 ~~~bash

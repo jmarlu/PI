@@ -28,19 +28,23 @@ La bitácora debe mostrar el proceso, no una lista de intentos sin explicación.
 | Storage lleno | Pool físico, discos, ISO y copias | Detener nuevas escrituras y acordar ampliación/limpieza; no borrar al azar |
 | CT con operación no permitida | Permisos, montaje, kernel y límites del CT | Investigar compatibilidad; no convertirlo en privilegiado sin aprobación |
 
-## Linux y automatización
+## Ansible
 
 | Síntoma | Comprobación | Siguiente paso |
 |---|---|---|
-| Samba rechaza usuario | Cuenta Linux y alta Samba | Revisar identidad y contraseña de forma privada |
-| Samba autentica pero no deja escribir | Grupo, valid users, POSIX y máscara ACL | Corregir permiso mínimo; no usar chmod 777 |
-| testparm falla | Primera línea de error y sección duplicada | Corregir antes de reiniciar |
+| No hay hosts coincidentes | Grupo del play e inventario seleccionado | Revisar --graph y --list-hosts antes de ejecutar |
 | Ansible unreachable | IP de inventario, SSH, usuario y huella | Probar primero SSH normal |
 | Ansible pide privilegios | Sudo autorizado | Usar --ask-become-pass; no incrustar contraseña |
-| Módulo ACL no encontrado | Colección ansible.posix | Instalar los requisitos del ejemplo |
+| Módulo no encontrado | Nombre completo, colección y versión | Instalar los requisitos declarados del ejemplo |
+| Variable indefinida | Nombre, archivo, grupo y ámbito | Corregir la fuente; no ocultar un dato obligatorio con default |
+| Check mode omite una validación | Soporte del módulo y dependencias todavía inexistentes | Revisar el diseño y validar con una ejecución real autorizada |
+| Handler no se ejecuta | Cambio real y notificación coincidente | Comprobar cuándo se procesa; no forzar cambios ficticios |
 | Segunda ejecución cambia siempre | Módulo, condición o agente externo | Investigar idempotencia, no ocultar cambios reales |
-| Backup incompleto | Orígenes, montaje, espacio, rsync y permisos | Conservar el error, corregir y generar otra copia |
-| Datos restaurados pero acceso falla | Propietarios, ACL, cuentas y configuración | Recuperar dependencias y repetir desde el cliente |
+| Presupuesto rechazado en el laboratorio local | Variables y suma de RAM | Corregir los datos, no eliminar la aserción |
+
+Para incidencias del servicio, utiliza el procedimiento de ASO aprobado y
+registra las pruebas en la [práctica](../proyecto/practica.md#13-fase-7-servicio-aso).
+Para copias, revisa [alcance y recuperación](../proxmox/operacion-recuperacion.md).
 
 Si el bloqueo depende del centro, entrega una incidencia verificable y una
 alternativa propuesta. No cambies la infraestructura ajena para continuar.

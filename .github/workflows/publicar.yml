@@ -36,6 +36,7 @@ jobs:
           python -m pip install ansible-core==2.21.3
           ansible-galaxy collection install -r docs/recursos/archivos/ansible-samba/requirements.yml
           ansible-playbook -i docs/recursos/archivos/ansible-samba/inventory.ini docs/recursos/archivos/ansible-samba/playbook.yml --syntax-check
+          python tools/validar_laboratorio_ansible.py
       - name: Guardar sitio
         uses: actions/upload-pages-artifact@v4
         with:

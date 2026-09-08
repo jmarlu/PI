@@ -57,6 +57,8 @@ Explicación → demostración → trabajo individual → validación → docume
 Cada cierre deja un cambio significativo publicado y comprobado en GitHub.
 Una incidencia se registra con pruebas y siguiente paso.
 
+Consulta el [calendario de las 33 sesiones y sus hitos](index.md).
+
 ## 7. Límites del laboratorio
 
 Solo equipos, red y cuentas autorizados. Sin datos personales reales, sin secretos

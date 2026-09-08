@@ -2,6 +2,8 @@ site_name: Proyecto Proxmox | ASIR
 site_description: Proyecto Intermodular de ASIR. Nodo Proxmox, Linux, Bash y Ansible. Curso 2026-2027.
 site_url: !ENV [SITE_URL, "http://127.0.0.1:8765/"]
 strict: true
+not_in_nav: |
+  clases/index.md
 theme:
   name: material
   language: es
@@ -52,22 +54,32 @@ nav:
       - Primera sesión · GitHub: proyecto/primera-sesion.md
       - Práctica completa: proyecto/practica.md
       - Evaluación y defensa: proyecto/evaluacion.md
+      - Entrega de Bash y Ansible: proyecto/automatizacion.md
   - Clases:
-      - Calendario e hitos: clases/index.md
+      #- Calendario e hitos: clases/index.md
       - Presentación del proyecto: clases/presentacion.md
-      - Explicaciones de las 33 sesiones: clases/explicaciones.md
   - Conocer Proxmox:
       - Qué es y qué vas a construir: proxmox/conceptos.md
+      - Arquitectura y ciclo de vida: proxmox/arquitectura.md
+      - VM, LXC y virtualización anidada: proxmox/virtualizacion.md
+      - CPU, memoria y dimensionamiento: proxmox/recursos.md
+      - Redes virtuales y recorridos: proxmox/redes-teoria.md
+      - Almacenamiento y discos: proxmox/almacenamiento-teoria.md
+      - Plantillas, clones e identidad: proxmox/clonado-teoria.md
+      - Operación, permisos y recuperación: proxmox/operacion-recuperacion.md
+  - Taller de Proxmox:
       - Interfaz y operaciones: proxmox/interfaz.md
       - Instalación física o virtualizada: proxmox/instalacion.md
       - Montaje en VirtualBox local: proxmox/virtualbox.md
       - Red y almacenamiento: proxmox/red-almacenamiento.md
       - Plantilla, servidor y cliente: proxmox/plantillas.md
-  - Administrar Linux:
-      - Servicio Samba y ACL: linux/servicio-aso.md
-      - Scripts Bash y Ansible: linux/automatizacion.md
-      - Copias y restauración: linux/copias.md
-      - Rendimiento y seguridad: linux/pruebas.md
+  - Ansible:
+      - Modelo y fundamentos: ansible/fundamentos.md
+      - Inventario, SSH y privilegios: ansible/inventario-conexion.md
+      - YAML, variables y plantillas: ansible/variables-plantillas.md
+      - Playbooks, módulos y handlers: ansible/playbooks.md
+      - Organización, secretos y validación: ansible/organizacion-validacion.md
+      - Laboratorio guiado: ansible/laboratorio.md
   - Recursos:
       - Descargas y plantillas: recursos/descargas.md
       - Resolver incidencias: recursos/incidencias.md

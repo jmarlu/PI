@@ -55,6 +55,27 @@ frente al fallo físico del nodo.
 Tu objetivo es un laboratorio administrable y reproducible. No necesitas
 montar un clúster, Ceph ni un sistema de producción para completar la práctica.
 
+## Recorrido de teoría
+
+Estos temas explican las decisiones que después aplicarás en el taller.
+Trabaja las preguntas dentro de tu memoria y bitácora existentes; no son
+nuevos entregables ni una segunda práctica de inventario.
+
+| Tema | Pregunta central |
+|---|---|
+| [Arquitectura](arquitectura.md) | ¿Qué administra el panel y qué ejecuta el servicio? |
+| [VM, LXC y anidación](virtualizacion.md) | ¿Qué virtualizo y qué soporte necesita cada alternativa? |
+| [CPU y memoria](recursos.md) | ¿Cabe el laboratorio completo sin agotar el anfitrión? |
+| [Redes virtuales](redes-teoria.md) | ¿Qué recorrido sigue cada conexión? |
+| [Almacenamiento](almacenamiento-teoria.md) | ¿Dónde están los datos y qué capacidad es realmente libre? |
+| [Plantillas y clones](clonado-teoria.md) | ¿Cómo creo sistemas distintos desde una base común? |
+| [Operación y recuperación](operacion-recuperacion.md) | ¿Cómo limito riesgos y demuestro que puedo recuperar? |
+
+No basta con memorizar definiciones. Para cada decisión distingue lo que
+afirma la documentación oficial, lo que has configurado y lo que has medido.
+Una captura del panel puede apoyar una afirmación, pero necesita contexto:
+máquina, fecha, prueba y conclusión.
+
 ## Comprueba que lo entiendes
 
 Explica dónde están el navegador, Samba y Ansible en tu caso.

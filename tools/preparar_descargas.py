@@ -38,6 +38,11 @@ def main() -> None:
             "pi-proxmox-apellido-nombre",
         )
     archive_tree(FILES / "ansible-samba", FILES / "ansible-samba.zip", "ansible")
+    archive_tree(
+        FILES / "ansible-laboratorio",
+        FILES / "ansible-laboratorio.zip",
+        "ansible-laboratorio",
+    )
     downloads = sorted(
         p for p in FILES.rglob("*") if p.is_file() and p.name != "SHA256SUMS.txt"
     )

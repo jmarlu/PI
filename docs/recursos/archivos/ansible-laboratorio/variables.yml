@@ -1,0 +1,12 @@
+---
+fase: inventario
+reserva_nodo_mib: 2048
+nodo:
+  nombre: pve-alumno
+  ram_mib: 8192
+invitados:
+  - nombre: srv-aso
+    ram_mib: 2048
+  - nombre: cli-linux
+    ram_mib: 1024
+

@@ -1,0 +1,19 @@
+# Nodo {{ nodo.nombre }}
+
+Diseno didactico declarado, no inventario medido de hardware.
+
+Fase: {{ fase }}
+Memoria asignada al nodo: {{ nodo.ram_mib }} MiB
+Reserva interna: {{ reserva_nodo_mib }} MiB
+
+## Invitados
+
+{% for invitado in invitados %}
+- {{ invitado.nombre }}: {{ invitado.ram_mib }} MiB
+{% endfor %}
+
+## Presupuesto
+
+RAM de invitados: {{ invitados | map(attribute='ram_mib') | sum }} MiB
+Margen restante: {{ nodo.ram_mib - reserva_nodo_mib - (invitados | map(attribute='ram_mib') | sum) }} MiB
+

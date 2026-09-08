@@ -32,45 +32,50 @@ incluyen al menos un commit significativo publicado y verificado en
 GitHub. Ante una incidencia de acceso se documenta el bloqueo y se
 completa la publicacion al recuperarlo.
 
-Consulta las [explicaciones de cada una de las 33 sesiones](explicaciones.md).
+Cada número de sesión enlaza directamente con la práctica, el procedimiento
+o el tema correspondiente. La tabla conserva el trabajo y la evidencia
+previstos para las 33 clases.
+
+Consulta también la [presentación del proyecto](presentacion.md) y la
+[práctica completa](../proyecto/practica.md).
 
 ## 2. Secuencia semanal
 
 | Sesion | Bloque | Explicacion y demostracion | Trabajo del alumnado | Evidencia de salida |
 |---:|---|---|---|---|
-| [1](explicaciones.md#s01) | GitHub y Markdown | Repositorio, README, enlaces, commit y push; reto y modalidades | Crear GitHub primero, publicar documentacion inicial y compartir URL | README, ficha, bitacora, memoria iniciada y primer commit accesibles al profesor |
-| [2](explicaciones.md#s02) | Inventario investigado | Puedo instalarlo, que limitaciones tendre y que componentes son criticos | Investigar, citar fuentes, calcular recursos y justificar las tres respuestas | `01-inventario-hardware.md` con respuestas, evidencias, prioridades y dictamen |
-| [3](explicaciones.md#s03) | Requisitos | Revisar el dictamen; necesidad, alcance, exclusiones y riesgos | Primeros 20 minutos: corregir y defender viabilidad; despues fijar requisitos | Inventario revisado, alcance validado y riesgos iniciales |
-| [4](explicaciones.md#s04) | Red | Bridges, direccionamiento, gateway, DNS y aislamiento | Disenar tabla IP y primer diagrama | `02-diagrama-red.md` iniciado |
-| [5](explicaciones.md#s05) | Recursos | Dimensionamiento de VMs/LXC, almacenamiento y cuotas | Definir CPU, RAM, disco y red de cada maquina | Tabla de recursos |
-| [6](explicaciones.md#s06) | Diseno final | Revision del diseno antes de instalar | Corregir diagrama, plan de instalacion y checklist | Hito de diseno aprobado |
-| [7](explicaciones.md#s07) | Instalacion | Instalacion Proxmox fisica o virtualizada | Instalar Proxmox en el entorno asignado | Capturas de instalacion |
-| [8](explicaciones.md#s08) | Red del nodo | IP de gestion, hostname, repositorios y actualizacion | Configurar red base y actualizar nodo | `pveversion`, red y acceso web |
-| [9](explicaciones.md#s09) | Validacion nodo | Errores tipicos de instalacion, DNS, gateway y acceso | Resolver incidencias y documentar nodo operativo | `03-instalacion-proxmox.md` completo |
-| [10](explicaciones.md#s10) | Almacenamiento | Storages, ISOs, backups y plantillas | Configurar almacenamiento y subir/seleccionar ISO | Capturas de storage |
-| [11](explicaciones.md#s11) | Seguridad base | Usuarios, permisos, firewall y acceso remoto | Aplicar controles minimos autorizados | Tabla de usuarios/permisos |
-| [12](explicaciones.md#s12) | Hito Proxmox | Revision tecnica de nodo, red y almacenamiento | Completar documentacion de administracion base | Hito Proxmox validado |
-| [13](explicaciones.md#s13) | Plantilla I | VM/CT base, paquetes minimos y actualizaciones | Crear sistema Linux base | `04-plantilla-linux.md` iniciado |
-| [14](explicaciones.md#s14) | Plantilla II | SSH, usuario sudo, qemu agent/cloud-init si procede | Preparar acceso y configuracion comun | Prueba SSH y paquetes instalados |
-| [15](explicaciones.md#s15) | Plantilla III | Limpieza, conversion a plantilla y clonado | Convertir en plantilla y crear clon de prueba | Evidencia de template |
-| [16](explicaciones.md#s16) | Validacion plantilla | Criterios de plantilla reutilizable | Corregir plantilla y documentar procedimiento | Plantilla validada |
-| [17](explicaciones.md#s17) | VM/LXC servidor | Despliegue de `srv-aso` desde plantilla | Crear servidor ASO con IP y hostname | Maquina `srv-aso` operativa |
-| [18](explicaciones.md#s18) | VM/LXC cliente | Despliegue de `cli-linux` desde plantilla | Crear cliente de pruebas | Maquina `cli-linux` operativa |
-| [19](explicaciones.md#s19) | Conectividad | Pruebas `ping`, `ssh`, rutas, DNS o `/etc/hosts` | Validar comunicacion cliente-servidor | Pruebas de red |
-| [20](explicaciones.md#s20) | Inventario maquinas | Recursos, limites y documentacion Proxmox | Completar tabla de VMs/LXC | `05-vms-lxc.md` completo |
-| [21](explicaciones.md#s21) | Servicio ASO I | Eleccion del servicio; ejemplo recomendado Samba/ACL | Instalar paquetes del servicio elegido | Servicio instalado |
-| [22](explicaciones.md#s22) | Servicio ASO II | Usuarios, grupos, permisos POSIX y ACL | Crear usuarios, grupos y directorios | Evidencia de permisos |
-| [23](explicaciones.md#s23) | Servicio ASO III | Configuracion del servicio y systemd | Configurar servicio y reiniciar de forma controlada | Configuracion y `systemctl status` |
-| [24](explicaciones.md#s24) | Servicio ASO IV | Pruebas desde cliente y lectura de logs | Probar acceso correcto y denegado | `06-servicio-aso.md` completo |
-| [25](explicaciones.md#s25) | Hardening servicio | Puertos, permisos, actualizaciones y logs | Aplicar mejoras basicas y registrar cambios | Informe breve de hardening |
-| [26](explicaciones.md#s26) | Bash | Scripts de inventario y copia; variables y errores | Crear `inventario.sh` y `backup_servicio.sh` | Scripts Bash ejecutados |
-| [27](explicaciones.md#s27) | Ansible I | Inventario, conexion SSH y estructura de playbook | Crear `inventory.ini` y primer `playbook.yml` | Ping Ansible correcto |
-| [28](explicaciones.md#s28) | Ansible II | Instalacion, configuracion, servicios y validacion | Automatizar parte del servicio ASO | Playbook ejecutado correctamente |
-| [29](explicaciones.md#s29) | Backup | Snapshots, backups Proxmox y copia de servicio | Crear copia antes de cambio controlado | Backup documentado |
-| [30](explicaciones.md#s30) | Restauracion | Procedimiento de recuperacion y RTO | Simular fallo, restaurar y probar servicio | Restauracion demostrada |
-| [31](explicaciones.md#s31) | Rendimiento | CPU, RAM, disco, red y lectura de metricas | Ejecutar pruebas y comentar resultados | `09-rendimiento-seguridad.md` iniciado |
-| [32](explicaciones.md#s32) | Seguridad | Puertos, firewall, usuarios, permisos y logs | Ejecutar pruebas dentro del laboratorio autorizado | Informe de seguridad |
-| [33](explicaciones.md#s33) | Cierre | Preparacion de defensa y demo final | Completar memoria, anexos y presentacion | Memoria final y demo preparada |
+| [1](../proyecto/primera-sesion.md) | GitHub y Markdown | Repositorio, README, enlaces, commit y push; reto y modalidades | Crear GitHub primero, publicar documentacion inicial y compartir URL | README, ficha, bitacora, memoria iniciada y primer commit accesibles al profesor |
+| [2](../proyecto/practica.md#7-fase-1-inventario-investigado-y-viabilidad) | Inventario investigado | Puedo instalarlo, que limitaciones tendre y que componentes son criticos | Investigar, citar fuentes, calcular recursos y justificar las tres respuestas | `01-inventario-hardware.md` con respuestas, evidencias, prioridades y dictamen |
+| [3](../proyecto/practica.md#1-reto) | Requisitos | Revisar el dictamen; necesidad, alcance, exclusiones y riesgos | Primeros 20 minutos: corregir y defender viabilidad; despues fijar requisitos | Inventario revisado, alcance validado y riesgos iniciales |
+| [4](../proxmox/redes-teoria.md) | Red | Bridges, direccionamiento, gateway, DNS y aislamiento | Disenar tabla IP y primer diagrama | `02-diagrama-red.md` iniciado |
+| [5](../proxmox/recursos.md) | Recursos | Dimensionamiento de VMs/LXC, almacenamiento y cuotas | Definir CPU, RAM, disco y red de cada maquina | Tabla de recursos |
+| [6](../proyecto/practica.md#8-fase-2-diseno-de-red) | Diseno final | Revision del diseno antes de instalar | Corregir diagrama, plan de instalacion y checklist | Hito de diseno aprobado |
+| [7](../proxmox/instalacion.md) | Instalacion | Instalacion Proxmox fisica o virtualizada | Instalar Proxmox en el entorno asignado | Capturas de instalacion |
+| [8](../proxmox/red-almacenamiento.md) | Red del nodo | IP de gestion, hostname, repositorios y actualizacion | Configurar red base y actualizar nodo | `pveversion`, red y acceso web |
+| [9](../recursos/incidencias.md#nodo-y-red) | Validacion nodo | Errores tipicos de instalacion, DNS, gateway y acceso | Resolver incidencias y documentar nodo operativo | `03-instalacion-proxmox.md` completo |
+| [10](../proxmox/almacenamiento-teoria.md) | Almacenamiento | Storages, ISOs, backups y plantillas | Configurar almacenamiento y subir/seleccionar ISO | Capturas de storage |
+| [11](../proxmox/operacion-recuperacion.md#administrar-con-alcance-limitado) | Seguridad base | Usuarios, permisos, firewall y acceso remoto | Aplicar controles minimos autorizados | Tabla de usuarios/permisos |
+| [12](../proyecto/practica.md#10-fase-4-configuracion-base-del-nodo) | Hito Proxmox | Revision tecnica de nodo, red y almacenamiento | Completar documentacion de administracion base | Hito Proxmox validado |
+| [13](../proxmox/plantillas.md) | Plantilla I | VM/CT base, paquetes minimos y actualizaciones | Crear sistema Linux base | `04-plantilla-linux.md` iniciado |
+| [14](../proxmox/plantillas.md#configuracion-comun-dentro-del-linux-base) | Plantilla II | SSH, usuario sudo, qemu agent/cloud-init si procede | Preparar acceso y configuracion comun | Prueba SSH y paquetes instalados |
+| [15](../proxmox/clonado-teoria.md) | Plantilla III | Limpieza, conversion a plantilla y clonado | Convertir en plantilla y crear clon de prueba | Evidencia de template |
+| [16](../proxmox/clonado-teoria.md#criterio-de-aceptacion) | Validacion plantilla | Criterios de plantilla reutilizable | Corregir plantilla y documentar procedimiento | Plantilla validada |
+| [17](../proxmox/plantillas.md#desplegar-las-dos-maquinas) | VM/LXC servidor | Despliegue de `srv-aso` desde plantilla | Crear servidor ASO con IP y hostname | Maquina `srv-aso` operativa |
+| [18](../proxmox/plantillas.md#desplegar-las-dos-maquinas) | VM/LXC cliente | Despliegue de `cli-linux` desde plantilla | Crear cliente de pruebas | Maquina `cli-linux` operativa |
+| [19](../proxmox/redes-teoria.md#diagnostico-por-capas) | Conectividad | Pruebas `ping`, `ssh`, rutas, DNS o `/etc/hosts` | Validar comunicacion cliente-servidor | Pruebas de red |
+| [20](../proyecto/practica.md#12-fase-6-despliegue-de-dos-vms-o-contenedores) | Inventario maquinas | Recursos, limites y documentacion Proxmox | Completar tabla de VMs/LXC | `05-vms-lxc.md` completo |
+| [21](../proyecto/practica.md#13-fase-7-servicio-aso) | Servicio ASO I | Eleccion del servicio; ejemplo recomendado Samba/ACL | Instalar paquetes del servicio elegido | Servicio instalado |
+| [22](../proyecto/practica.md#13-fase-7-servicio-aso) | Servicio ASO II | Usuarios, grupos, permisos POSIX y ACL | Crear usuarios, grupos y directorios | Evidencia de permisos |
+| [23](../proyecto/practica.md#13-fase-7-servicio-aso) | Servicio ASO III | Configuracion del servicio y systemd | Configurar servicio y reiniciar de forma controlada | Configuracion y `systemctl status` |
+| [24](../proyecto/practica.md#13-fase-7-servicio-aso) | Servicio ASO IV | Pruebas desde cliente y lectura de logs | Probar acceso correcto y denegado | `06-servicio-aso.md` completo |
+| [25](../proyecto/practica.md#17-fase-11-pruebas-de-seguridad) | Hardening servicio | Puertos, permisos, actualizaciones y logs | Aplicar mejoras basicas y registrar cambios | Informe breve de hardening |
+| [26](../proyecto/automatizacion.md#dos-scripts-propios-adaptados) | Bash | Scripts de inventario y copia; variables y errores | Crear `inventario.sh` y `backup_servicio.sh` | Scripts Bash ejecutados |
+| [27](../ansible/inventario-conexion.md) | Ansible I | Inventario, conexion SSH y estructura de playbook | Crear `inventory.ini` y primer `playbook.yml` | Ping Ansible correcto |
+| [28](../ansible/playbooks.md) | Ansible II | Instalacion, configuracion, servicios y validacion | Automatizar parte del servicio ASO | Playbook ejecutado correctamente |
+| [29](../proxmox/operacion-recuperacion.md#snapshot-backup-y-copia-del-servicio) | Backup | Snapshots, backups Proxmox y copia de servicio | Crear copia antes de cambio controlado | Backup documentado |
+| [30](../proyecto/practica.md#restauracion-obligatoria) | Restauracion | Procedimiento de recuperacion y RTO | Simular fallo, restaurar y probar servicio | Restauracion demostrada |
+| [31](../proyecto/practica.md#16-fase-10-pruebas-de-rendimiento) | Rendimiento | CPU, RAM, disco, red y lectura de metricas | Ejecutar pruebas y comentar resultados | `09-rendimiento-seguridad.md` iniciado |
+| [32](../proyecto/practica.md#17-fase-11-pruebas-de-seguridad) | Seguridad | Puertos, firewall, usuarios, permisos y logs | Ejecutar pruebas dentro del laboratorio autorizado | Informe de seguridad |
+| [33](../proyecto/evaluacion.md#preparar-la-demostracion) | Cierre | Preparacion de defensa y demo final | Completar memoria, anexos y presentacion | Memoria final y demo preparada |
 
 ## 3. Hora final de cierre
 

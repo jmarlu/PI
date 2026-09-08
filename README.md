@@ -6,6 +6,11 @@ la **raíz del repositorio que se publicará**. No hay que subir toda la carpeta
 Modalidad virtual: Proxmox en VirtualBox en el equipo del alumno. No se cuenta
 con el Proxmox del centro. La guía local incluye recursos, interfaces y red NAT.
 
+La teoría se concentra en Proxmox y Ansible: siete capítulos nuevos de Proxmox,
+cinco de fundamentos y técnica Ansible, y un laboratorio Ansible guiado.
+Se ha retirado el bloque teórico de administración Linux, Samba y ACL;
+el servicio ASO y los dos scripts Bash siguen siendo entregables de la práctica.
+
 ## Vista local
 
 Requisitos: Python 3.10 o posterior, soporte venv, Bash y acceso a Internet
@@ -68,7 +73,10 @@ del alumno es distinto y puede ser privado con acceso docente.
 
 - Editar `docs/`: contenido público del curso.
 - `docs/proyecto/practica.md`: enunciado único y rúbrica de referencia.
-- `docs/clases/`: calendario y explicaciones de las 33 sesiones.
+- `docs/clases/`: presentación y calendario de las 33 sesiones, con enlaces
+  directos a la práctica y los temas.
+- `docs/proxmox/`: teoría ampliada y procedimientos del taller.
+- `docs/ansible/`: teoría progresiva y laboratorio guiado.
 - `docs/recursos/archivos/`: scripts y ejemplos descargables.
 - `tools/preparar_descargas.py`: regenera ZIP y sumas desde esos ejemplos.
 - `tools/comprobar_enlaces.py`: valida páginas, anclas y archivos locales.
@@ -90,7 +98,11 @@ Para empaquetar toda la web, sin entornos virtuales ni HTML generado:
 ## Verificación adicional
 
 El workflow comprueba sintaxis Ansible con `ansible-core==2.21.3` y la colección
-`ansible.posix==2.2.2`. No conecta ni modifica servidores. La ejecución funcional
+`ansible.posix==2.2.2`. También ejecuta el laboratorio introductorio en directorios
+temporales: idempotencia, deriva, entradas inválidas y rechazo de enlaces.
+No conecta ni modifica servidores. Para repetir esa prueba, con Ansible instalado
+en el entorno Python compatible, ejecuta
+`.venv/bin/python tools/validar_laboratorio_ansible.py`. La ejecución funcional
 del servicio, el NAT y las restauraciones debe validarse en el laboratorio real.
 
 La prueba de navegador es opcional y requiere Node, Playwright, pngjs y Chromium:
