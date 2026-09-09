@@ -54,15 +54,20 @@ de ese disco puede haber un volumen LVM-thin que actúe como disco de
 No todos los backends ofrecen los mismos formatos ni las mismas capacidades
 de snapshot/clonación. No deduzcas soporte solamente de la extensión.
 
-Ejemplo original:
+Ejemplo original de dependencias, de soporte exterior a datos interiores:
 
-~~~text
-SSD del equipo del alumno
-  archivo VDI de la VM Proxmox
-    sistema y pool de Proxmox
-      volumen del disco de srv-aso
-        sistema de archivos y datos del servicio
+~~~mermaid
+flowchart TD
+    H["Disco real del alumno"] --> V["Archivo VDI de Proxmox"]
+    V --> P["Pool de Proxmox"]
+    P --> D["Disco virtual de srv-aso"]
+    D --> F["Sistema de archivos"]
+    F --> A["Datos del servicio"]
 ~~~
+
+Cada nivel utiliza almacenamiento del anterior; las cajas **no** son seis
+dispositivos independientes. En modalidad física se elimina el archivo VDI
+exterior, pero sigue habiendo dependencias entre disco, pool, volúmenes y datos.
 
 Mover un documento dentro del invitado no cambia esa cadena de dependencias.
 Perder el SSD exterior puede hacer perder todos sus niveles simultáneamente.
@@ -84,6 +89,62 @@ Borrar archivos dentro de una VM no implica que todas las capas recuperen
 inmediatamente su espacio. Discard/TRIM necesita soporte y configuración
 coherentes a lo largo del recorrido. No lo uses como sustituto de una reserva
 de capacidad.
+
+## Un archivo tiene que caber en todas las capas {#ejemplo-capacidad}
+
+### Caso resuelto A: queda espacio en el invitado, pero no en el host
+
+Supón estas observaciones y una operación que necesita **8 GiB adicionales
+reales**. Para simplificar, no contamos todavía metadatos ni margen:
+
+| Capa | Espacio libre observado | ¿Admite esos 8 GiB adicionales? |
+|---|---:|---|
+| Disco del anfitrión | 6 GiB | No, si el VDI debe crecer en esa cantidad |
+| Pool del nodo | 30 GiB | Sí en este nivel, sin considerar otras reservas |
+| Sistema de archivos del invitado | 12 GiB | Sí en este nivel |
+
+El invitado puede informar espacio libre y aun así fallar la operación por
+agotamiento del soporte exterior. No se arregla ampliando de 24 a 40 GiB su
+capacidad virtual: el equipo físico sigue teniendo el mismo límite.
+
+La hipótesis supone crecimiento real del VDI. Si reutilizas bloques ya
+asignados, el crecimiento puede ser diferente; debes medirlo. No afirmes
+que todo archivo de 8 GiB aumenta exactamente 8 GiB en cada capa.
+
+### Caso resuelto B: aparecen dos storages sobre el mismo disco
+
+`local` contiene ISO y `local-lvm` contiene discos de invitados. Aunque el
+panel muestre dos entradas, podrían estar sobre particiones o volúmenes del
+mismo dispositivo.
+
+**Capacidad:** estudias cómo se reparte realmente ese dispositivo.
+**Continuidad:** un fallo físico suyo puede hacer perder ambas entradas.
+
+No sumes capacidad total y espacio libre, ni sumes dos vistas de un mismo pool.
+Registra por separado “dispositivo”, “backend”, “contenido” y “capacidad
+utilizable”.
+
+### Caso resuelto C: ampliar un disco no amplía todo lo que contiene
+
+Aumentar la capacidad virtual presentada por Proxmox modifica una capa.
+La partición, volumen lógico y sistema de archivos del invitado pueden requerir
+operaciones adicionales compatibles con su diseño.
+
+Primero comprueba qué capa está llena. Luego prepara copia, procedimiento
+específico y validación. No se propone aquí una receta de particionado:
+ejecutarla sin conocer el layout podría dañar el sistema.
+
+## Elegir el destino de tres objetos
+
+| Objeto que vas a guardar | Decisión razonada |
+|---|---|
+| ISO de instalación | Storage que admita ISO y tenga espacio real |
+| Disco de `srv-aso` | Backend que admita discos de VM y cumpla el diseño |
+| Backup del invitado | Destino con contenido de backup habilitado, capacidad, permisos y riesgo físico identificado |
+
+“Es local” no responde ninguna de esas tres decisiones. Si el asistente no
+ofrece un storage, revisa el tipo de contenido y su disponibilidad antes de
+pensar que se ha borrado.
 
 ## Qué vigilar antes de copiar o clonar
 
@@ -112,4 +173,3 @@ contrastarías sin borrar datos.
 
 Continúa con [plantillas y clones](clonado-teoria.md) y
 [recuperación](operacion-recuperacion.md).
-

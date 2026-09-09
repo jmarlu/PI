@@ -85,6 +85,32 @@ Compara nombres, IP, `/etc/machine-id` y huellas públicas de SSH cuando corresp
 No publiques claves privadas. No cambies una huella conocida en el cliente SSH
 sin comprobar antes que realmente has recreado ese invitado.
 
+## Ejemplo de validación de un clon
+
+Escenario didáctico: la plantilla tiene ID 900 y has creado la VM 101
+`srv-aso`, con la IP prevista `192.168.56.20/24`. Los números son ejemplos,
+no IDs que debas reutilizar sin comprobarlos.
+
+1. En Proxmox comprueba el ID, disco, bridge y recursos del clon.
+2. En su consola comprueba hostname e IP antes de conectarlo donde pueda
+   duplicar la dirección de otra máquina.
+3. Desde el equipo de administración, verifica su identidad SSH mediante
+   el mecanismo autorizado y prueba acceso.
+4. Confirma que no heredó datos personales ni secretos de la base.
+5. Repite con `cli-linux` y compara los resultados de ambos.
+
+Si Proxmox muestra `srv-aso` pero el sistema interior conserva el hostname
+de la base, **la clonación del objeto no ha resuelto toda la inicialización**.
+Registra qué debe generar la plantilla y qué debes configurar en cada clon.
+
+El QEMU Guest Agent es otro ejemplo de comprobación en dos lados: en una VM
+debe estar instalado y funcionando dentro, y Proxmox debe tener habilitado
+su uso. Una casilla marcada no demuestra la comunicación. En un CT no
+necesitas ese agente porque no es una VM QEMU.
+
+Las relaciones entre [base, disco e identidad](clonado-teoria.md#ejemplo-identidad)
+explican por qué estas pruebas forman parte de aceptar la plantilla.
+
 ## Entrega
 
 En `docs/04-plantilla-linux.md`: sistema, versión, preparación, limpieza,

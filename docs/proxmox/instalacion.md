@@ -61,6 +61,35 @@ Si la VM Proxmox funciona pero KVM no está disponible dentro, valida LXC
 con el profesor. Si VirtualBox no puede arrancar la propia VM, LXC no evita
 ese requisito: registra el bloqueo y revisa la viabilidad del equipo.
 
+## Entender lo que el instalador está cambiando
+
+El instalador modifica el **disco que le presenta su entorno**. En la ruta
+física puede ser el dispositivo real del ordenador autorizado; en la ruta
+VirtualBox normal de este curso debe ser el disco virtual VDI seleccionado.
+
+| Comprobación | Ruta física | Ruta VirtualBox |
+|---|---|---|
+| ¿Qué sistema está arrancando? | Instalador desde USB en equipo dedicado | Instalador dentro de la ventana de la VM |
+| ¿Qué se puede borrar? | El disco físico seleccionado | El contenido del VDI presentado a esa VM |
+| ¿Dónde quedará Proxmox? | En el equipo dedicado | Dentro de la VM exterior |
+| ¿Dónde se crean servidor y cliente? | En Proxmox | También en Proxmox, no como otras VMs exteriores |
+
+No añadas acceso directo a discos físicos a VirtualBox para esta actividad.
+El aislamiento del VDI presupone que has preparado esa VM como indica la guía.
+
+**Caso resuelto:** después de instalar, al reiniciar vuelve a aparecer el
+instalador.
+
+Eso no demuestra que se haya perdido el sistema instalado. Comprueba si
+continúa conectado el medio de instalación y qué dispositivo encabeza el
+orden de arranque. Evita repetir la instalación, porque volverías a modificar
+el disco sin haber diagnosticado el problema.
+
+**Caso distinto:** aparece “no bootable device”. Comprueba primero el disco
+conectado, el orden de arranque y la coherencia del firmware utilizado.
+No cambies todos esos parámetros a la vez ni alternes BIOS/UEFI a ciegas:
+registra el ajuste original y contrástalo con la instalación realizada.
+
 ## Actualización y red base
 
 Haz estos diagnósticos en **la consola de tu nodo**, no en la terminal del sistema anfitrión:

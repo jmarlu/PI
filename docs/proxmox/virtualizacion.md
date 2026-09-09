@@ -25,6 +25,36 @@ cgroups permiten controlar consumos. No arranca otro kernel independiente.
 Ninguna columna significa “seguro automáticamente”. La seguridad también
 depende de actualizaciones, configuración, privilegios y exposición de red.
 
+## Ver dónde está el kernel
+
+Esquemas conceptuales de **una carga**, con dependencias hacia abajo.
+No son capturas del panel ni representan el cableado de red.
+
+**Ruta VM:**
+
+~~~mermaid
+flowchart TD
+    A["Aplicación en la VM"] --> B["Kernel propio del invitado"]
+    B --> C["Hardware virtual · QEMU/KVM"]
+    C --> D["Kernel del nodo Proxmox"]
+~~~
+
+**Ruta LXC:**
+
+~~~mermaid
+flowchart TD
+    A["Aplicación dentro del CT"] --> B["Entorno aislado de procesos"]
+    B --> C["Kernel compartido del nodo"]
+~~~
+
+Al actualizar el kernel de una VM, actualizas el de ese invitado. Un CT no
+puede arrancar un kernel propio para reemplazar el del nodo: aunque su
+distribución sea distinta, ejecuta procesos sobre el kernel compartido.
+
+En modalidad virtual, debajo de **ambos** dibujos sigue existiendo la VM
+Proxmox de VirtualBox y el equipo real. El ahorro de LXC está en la capa de
+los invitados internos; no elimina la VM exterior.
+
 ## Dispositivos emulados y paravirtualizados
 
 Un dispositivo emulado busca que el invitado reconozca un modelo conocido.
@@ -81,6 +111,40 @@ Un CT comparte el kernel de **tu nodo Proxmox** aunque ese nodo sea, a su vez,
 una VM de VirtualBox. El CT no necesita KVM para ejecutar otro kernel, pero el
 nodo externo sigue necesitando poder funcionar.
 
+## Tres decisiones explicadas {#casos-eleccion}
+
+### Caso 1: Linux ligero con un servicio compatible
+
+El nodo ya funciona y el servicio no necesita otro kernel ni dispositivos
+especiales. Hay poca memoria disponible.
+
+**Razonamiento:** un CT no privilegiado puede reducir el gasto base y permitir
+la coexistencia con el cliente. Antes de aprobarlo, prueba el servicio y la
+recuperación con sus montajes reales. “Consume menos” no garantiza compatibilidad
+ni cubre datos externos que queden fuera del backup.
+
+### Caso 2: necesitas un kernel independiente
+
+Quieres ensayar una modificación del kernel sin cambiar el del nodo.
+
+**Razonamiento:** una VM separa ese kernel. Un CT no obtiene un kernel propio
+por asignarle más memoria o cambiar su nombre. En el montaje VirtualBox tendrás
+que comprobar además la disponibilidad de KVM interno y el presupuesto completo.
+
+### Caso 3: Proxmox arranca, pero la VM interna no
+
+La CPU del equipo declara soporte de virtualización, pero KVM no está disponible
+en la VM Proxmox.
+
+**Razonamiento:** la capacidad del procesador es solo un eslabón. Se comprueba
+qué expone VirtualBox al nodo y el arranque real de una VM de ensayo. Si no
+puede validarse KVM interno, se estudia LXC para un servicio compatible.
+No es correcto presentar la captura de `lscpu` del anfitrión como demostración
+de KVM funcional dentro de Proxmox.
+
+Elige por requisitos y pruebas. No asumas que activar `nesting` en un CT
+habilita VT-x/AMD-V en VirtualBox: son opciones de **capas diferentes**.
+
 ## Cómo justificar la elección
 
 Redacta una decisión basada en tu inventario, no en una preferencia genérica:
@@ -102,4 +166,3 @@ es válida; una VM que deja sin memoria al anfitrión no es mejor por su nombre.
 
 Relaciona las respuestas con las tres preguntas del inventario en la
 [práctica principal](../proyecto/practica.md), sin crear otra entrega.
-

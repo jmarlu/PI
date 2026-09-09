@@ -59,6 +59,71 @@ El intercambio a disco puede evitar un fallo inmediato, pero un sistema que
 intercambia memoria intensamente puede quedar inutilizable para la clase.
 No presentes “no se apagó” como prueba suficiente de viabilidad.
 
+## Calcular el margen paso a paso {#ejemplo-presupuesto}
+
+La tabla anterior usa una VM Proxmox de 10 GiB. Este segundo caso usa 8 GiB,
+como punto de partida de la guía de VirtualBox; **son alternativas**, no
+cantidades que debas sumar.
+
+### Caso resuelto A: propuesta que deja margen
+
+El equipo declara 16 GiB. Propones reservar 8 GiB al anfitrión y asignar 8 GiB
+a Proxmox. Dentro de Proxmox estimas 2 GiB para su sistema, 2 GiB para el
+servidor y 1 GiB para el cliente.
+
+~~~text
+Presupuesto exterior: 16 - 8 = 8 GiB para la VM Proxmox
+Margen interior:       8 - 2 - 2 - 1 = 3 GiB
+~~~
+
+Los 3 GiB interiores no vuelven a sumarse a los 8 GiB reservados fuera.
+Están dentro de la asignación de Proxmox y permiten absorber necesidades de
+esa capa. El cálculo demuestra coherencia aritmética, no rendimiento garantizado:
+hay que encender ambas cargas y observar también el anfitrión.
+
+### Caso resuelto B: propuesta que no cabe
+
+Con la misma VM Proxmox de 8 GiB, alguien propone nodo 2 GiB, servidor 4 GiB
+y cliente 3 GiB:
+
+~~~text
+Demanda prevista: 2 + 4 + 3 = 9 GiB
+Saldo:           8 - 9 = -1 GiB, antes de reservar margen
+~~~
+
+El reparto no es viable **tal como está planteado**. Las opciones son reducir
+necesidades justificadamente, usar invitados más ligeros compatibles o revisar
+la asignación exterior si el anfitrión puede permitírselo. Activar swap no
+convierte ese saldo negativo en RAM suficiente.
+
+Si propones no encender servidor y cliente a la vez, tampoco has demostrado
+las pruebas cliente-servidor del proyecto. Esa restricción debe contrastarse
+con el trabajo que realmente tienes que ejecutar.
+
+### Caso resuelto C: la plantilla también puede consumir
+
+Una plantilla preparada y apagada ocupa disco, pero no ejecuta la carga de una
+VM arrancada. Su clon de ensayo sí consume memoria y CPU al iniciarse.
+
+Por eso debes decidir cuándo pruebas ese clon y qué invitados permanecen
+activos. “Plantilla” no significa “sin coste”: el coste depende del recurso
+y del estado del objeto.
+
+## Interpretar medidas sin mezclar unidades
+
+`2048 MiB = 2 GiB`. En cambio, MB/GB decimales y MiB/GiB binarios no son
+unidades idénticas. Conserva la unidad que informa cada herramienta y convierte
+antes de comparar.
+
+Ejemplo original: un archivo de 600 MiB tarda 30 segundos en transferirse.
+El promedio observado es `600 / 30 = 20 MiB/s`. Eso no demuestra por sí solo
+la velocidad máxima de la tarjeta: pueden intervenir caché, disco, CPU,
+protocolo y las capas virtuales.
+
+Registra tamaño, duración, repeticiones y qué invitados estaban activos.
+Si otro ensayo tarda 20 segundos, no atribuyas la mejora a más vCPU si también
+cambiaste el disco o el archivo.
+
 ## Disco y doble aprovisionamiento
 
 El archivo VDI del nodo ocupa espacio en el disco del anfitrión. Dentro de él,
@@ -104,4 +169,3 @@ son medidas útiles si registras tamaño, condiciones y unidades.
 **Caso para tu memoria:** la CPU está al 20 %, el disco permanece ocupado y el
 cliente tarda en responder. ¿Por qué asignar más vCPU podría no ayudar?
 Usa tu respuesta para fundamentar el componente crítico elegido.
-

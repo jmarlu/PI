@@ -55,6 +55,26 @@ local conforme a la [guía específica](virtualbox.md#red-local). El NAT de Virt
 por sí solo no proporciona acceso desde el host al panel ni salida a los
 invitados internos: sigue el diseño de las dos interfaces y el NAT del nodo.
 
+## Ejemplo de diagnóstico con resultado limitado
+
+Escenario: desde el anfitrión puedes abrir el panel en `192.168.56.10:8006`;
+desde `cli-linux` no puedes llegar a `srv-aso` en `192.168.56.20`.
+
+La primera prueba valida la ruta de administración, **no** la interfaz virtual
+del cliente ni la del servidor. Revisa sus IP y máscaras, su conexión a
+`vmbr1` y el puerto concreto del servicio.
+
+| Resultado observado | Conclusión permitida | Siguiente comprobación |
+|---|---|---|
+| El nodo aparece en el panel | La gestión es accesible desde ese origen | Consola y configuración de cada invitado |
+| Cliente sin dirección prevista | Su configuración no coincide con el diseño | Corregir esa diferencia por el procedimiento aprobado |
+| Acceso por IP funciona, por nombre no | El problema puede estar en resolución | Nombre configurado y resolver de ese cliente |
+| Puerto accesible, operación rechazada | Hay comunicación con una aplicación | Prueba de aceptación del servicio y sus registros |
+
+No soluciones una IP duplicada abriendo puertos ni un error de autenticación
+creando otro bridge. Usa los [recorridos explicados](redes-teoria.md#ejemplo-recorridos)
+para formular una hipótesis comprobable.
+
 ## Qué almacena cada storage
 
 Los nombres son ejemplos habituales, no una garantía de tu instalación:

@@ -237,6 +237,33 @@ Referencia del mecanismo y de las zonas de conntrack:
 Este diseño es una propuesta de laboratorio que debes comprobar en tu versión;
 no se ha ejecutado sobre tu equipo real.
 
+## Ejemplo de lectura de rutas
+
+En la **consola del nodo Proxmox**, `ip route` debería ser coherente con el
+diseño. Fragmento ilustrativo de dos entradas; no es la tabla completa ni una
+salida medida en tu equipo:
+
+~~~text
+default via 10.0.2.2 dev vmbr0
+192.168.56.0/24 dev vmbr1 proto kernel scope link src 192.168.56.10
+~~~
+
+La primera entrada envía destinos no cubiertos por rutas más específicas
+hacia el NAT de VirtualBox. La segunda reconoce la red local de los invitados
+por `vmbr1`. Tener una IP de gestión en `vmbr1` no obliga a poner también
+allí otro gateway por defecto.
+
+Dentro de `srv-aso` o `cli-linux` la ruta por defecto es distinta: su siguiente
+salto previsto es `192.168.56.10`. No copies la tabla del nodo a sus invitados:
+ocupan posiciones diferentes en la red.
+
+**Caso resuelto:** el nodo descarga paquetes, pero los dos invitados no.
+
+La descarga del nodo comprueba su propia salida. Todavía pueden faltar ruta
+de los invitados, reenvío, NAT del nodo, tráfico de retorno permitido o
+resolución. Revisa por orden, sin añadir la misma regla repetidamente.
+Consulta el [esquema de los recorridos](redes-teoria.md#ejemplo-recorridos).
+
 ## 8. Validación y evidencia
 
 - Desde el host: panel del nodo y SSH autorizado a `srv-aso`.

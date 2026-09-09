@@ -1,8 +1,59 @@
 # Qué es Proxmox y qué vas a construir
 
 Proxmox VE administra máquinas virtuales KVM y contenedores LXC desde una
-interfaz web. El nodo es el sistema que los aloja; no es una de las máquinas
-invitadas. Consulta la [presentación oficial](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview).
+interfaz web. Llamamos **nodo** al sistema Proxmox que aloja tus invitados.
+En modalidad física se ejecuta sobre el ordenador dedicado; en VirtualBox,
+ese mismo nodo es también un invitado de la capa exterior. Los términos
+anfitrión e invitado dependen de qué capa estés describiendo.
+Consulta la [presentación oficial](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview).
+
+## Para qué virtualizamos un servidor
+
+Supón que necesitas un servidor para prestar el servicio y un cliente para
+probarlo. Si instalas todo en un único sistema, comparten configuración,
+paquetes y ciclo de reinicio. Además, una prueba hecha desde el propio servidor
+puede no recorrer la misma red que utilizaría un cliente.
+
+Con Proxmox defines dos sistemas separados sobre el hardware disponible.
+Puedes asignarles recursos distintos, apagar uno sin apagar voluntariamente
+el otro y guardar copias con un alcance identificado. La separación simplifica
+el ensayo y la recuperación, pero **no duplica el ordenador físico**:
+un fallo del dispositivo compartido puede afectar a ambos.
+
+Una VM tampoco es solo una ventana de consola. Sigue ejecutándose aunque
+cierres esa ventana o el navegador, siempre que su nodo siga funcionando.
+El navegador administra; no suministra la CPU de la VM.
+
+## Un laboratorio completo, explicado {#ejemplo-completo}
+
+Ejemplo didáctico compatible con el esquema de la guía de VirtualBox:
+un puesto con 16 GiB de RAM aloja una VM Proxmox de 8 GiB. Los otros 8 GiB quedan
+para el anfitrión y su margen. **No son mínimos oficiales ni recursos medidos.**
+
+| Objeto | Qué contiene | Quién lo administra |
+|---|---|---|
+| Equipo del alumno | LliureX, navegador, Git y VirtualBox | Su sistema anfitrión y las herramientas autorizadas |
+| VM exterior `pve-alumno` | Proxmox y el almacenamiento de sus invitados | VirtualBox |
+| Plantilla 900 | Base preparada para clonar | Proxmox |
+| Invitado 101, `srv-aso` | El servicio ASO | Proxmox para su hardware virtual; Ansible para su configuración |
+| Invitado 102, `cli-linux` | Cliente de pruebas | Proxmox para sus recursos; herramientas del cliente para probar |
+
+Si abres el navegador y visitas el panel, todavía no has entrado en
+`srv-aso`. Seleccionar su consola sí te da acceso a ese invitado. Si ejecutas
+Ansible desde el anfitrión hacia `192.168.56.20`, las tareas del servicio
+se aplican al servidor seleccionado, no al nodo `192.168.56.10`.
+
+**Tres situaciones resueltas:**
+
+- Cierras el navegador: el nodo y los invitados pueden continuar ejecutándose.
+- Apagas `cli-linux`: pierdes ese cliente de pruebas, pero `srv-aso` puede seguir
+  prestando servicio a otros clientes autorizados.
+- Apagas la VM Proxmox desde VirtualBox: interrumpes también los invitados que
+  dependían de ella. Tener sus consolas cerradas no los protege.
+
+En modalidad física se elimina la capa VirtualBox, no la separación entre
+nodo, servidor y cliente. El equipo de administración accede al nodo por la
+red autorizada; no hace falta ejecutar el navegador dentro de Proxmox.
 
 ## Cuatro lugares que no debes confundir
 
@@ -75,6 +126,23 @@ No basta con memorizar definiciones. Para cada decisión distingue lo que
 afirma la documentación oficial, lo que has configurado y lo que has medido.
 Una captura del panel puede apoyar una afirmación, pero necesita contexto:
 máquina, fecha, prueba y conclusión.
+
+## Localiza un ejemplo resuelto
+
+| Duda | Ejemplo explicado |
+|---|---|
+| ¿Qué significa lo configurado en una VM? | [Leer una configuración sin modificarla](arquitectura.md#ejemplo-configuracion) |
+| ¿Elijo VM o contenedor? | [Tres decisiones de virtualización](virtualizacion.md#casos-eleccion) |
+| ¿Cabe el laboratorio? | [Calcular RAM y margen paso a paso](recursos.md#ejemplo-presupuesto) |
+| ¿Por dónde viaja una conexión? | [Conexión local y salida exterior](redes-teoria.md#ejemplo-recorridos) |
+| ¿Por qué falla una escritura con espacio libre? | [Tres capas de capacidad](almacenamiento-teoria.md#ejemplo-capacidad) |
+| ¿Qué debe cambiar en un clon? | [Separar identidades](clonado-teoria.md#ejemplo-identidad) |
+| ¿Qué puedo recuperar y cuánto tardo? | [Ensayo con RPO y RTO](operacion-recuperacion.md#ejemplo-recuperacion) |
+| ¿Cómo interpreto el panel? | [Lectura de una captura real](interfaz.md#lectura-captura) |
+
+Los esquemas y resultados de ejemplo son material didáctico, no capturas de
+un laboratorio instalado para ti. Contrasta las hipótesis con tu equipo y
+añade tus propias evidencias a los documentos existentes.
 
 ## Comprueba que lo entiendes
 

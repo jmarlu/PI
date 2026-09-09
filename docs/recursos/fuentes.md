@@ -13,7 +13,9 @@ de tu equipo anfitrión y de VirtualBox cuando lo utilices, no solo páginas gen
 - [Manual de administración](https://pve.proxmox.com/pve-docs/pve-admin-guide.html).
 - [Almacenamiento](https://pve.proxmox.com/pve-docs/chapter-pvesm.html).
 - [Máquinas virtuales](https://pve.proxmox.com/pve-docs/chapter-qm.html).
+- [Consultas y opciones de qm](https://pve.proxmox.com/pve-docs/qm.1.html).
 - [Contenedores](https://pve.proxmox.com/pve-docs/chapter-pct.html).
+- [Consultas y opciones de pct](https://pve.proxmox.com/pve-docs/pct.1.html).
 - [Sistema base, redes y ZFS](https://pve.proxmox.com/pve-docs/chapter-sysadmin.html).
 - [Configuración distribuida pmxcfs](https://pve.proxmox.com/pve-docs/chapter-pmxcfs.html).
 - [Usuarios, realms y permisos](https://pve.proxmox.com/pve-docs/chapter-pveum.html).
@@ -21,6 +23,7 @@ de tu equipo anfitrión y de VirtualBox cuando lo utilices, no solo páginas gen
 - [Integración cloud-init](https://pve.proxmox.com/pve-docs/cloud-init.html).
 - [Backups y restauración](https://pve.proxmox.com/pve-docs/chapter-vzdump.html).
 - [KVM: invitados anidados](https://docs.kernel.org/virt/kvm/x86/running-nested-guests.html).
+- [Kernel Linux: presión de recursos PSI](https://docs.kernel.org/accounting/psi.html).
 - [Cloud-init: limpieza de una base](https://docs.cloud-init.io/en/latest/reference/cli.html#clean).
 
 ## VirtualBox local
@@ -79,6 +82,10 @@ Crédito: **Proxmox Server Solutions GmbH**.
 La captura se conserva sin alterar y se usa como referencia didáctica.
 La [información de medios de Proxmox](https://www.proxmox.com/en/?catid=11&id=737%3Amedia-kit-2&view=article)
 permite utilizar capturas con atribución.
+
+Los esquemas Mermaid de capas, red, almacenamiento, clones y recuperación
+son diagramas didácticos propios. No representan una instalación real ni
+sustituyen el diagrama que debe documentar cada alumno.
 
 Proxmox es una marca de su titular. Este curso no es documentación oficial ni
 está afiliado a Proxmox. Los recursos enlazados conservan sus derechos.

@@ -68,6 +68,74 @@ reinstalando el navegador. Investiga la ruta, el reenvío, el NAT y la resoluci�
 del invitado. El [apartado oficial de masquerading](https://pve.proxmox.com/pve-docs/pve-admin-guide.html#sysadmin_network_masquerading)
 explica aspectos que dependen también del firewall utilizado.
 
+## Dos conexiones, paso a paso {#ejemplo-recorridos}
+
+El siguiente esquema distingue el tráfico enviado al otro invitado del enviado
+al gateway. Las flechas son recorridos lógicos, no cables nuevos que tengas
+que añadir.
+
+~~~mermaid
+flowchart TD
+    C["cli-linux · .30"] --> B["Bridge vmbr1"]
+    B -->|"Destino local"| S["srv-aso · .20"]
+    B -->|"Tráfico al gateway"| G["Nodo · .10"]
+    G -->|"Enrutamiento y NAT"| W["vmbr0 · 10.0.2.15"]
+    W --> V["NAT de VirtualBox"]
+    V --> E["Destino exterior autorizado"]
+~~~
+
+En las direcciones abreviadas, `.30`, `.20` y `.10` pertenecen a
+`192.168.56.0/24`. El diagrama presupone el montaje de dos interfaces aprobado.
+
+### Caso resuelto A: SSH entre los dos invitados
+
+`cli-linux`, con `192.168.56.30/24`, se conecta a `192.168.56.20`.
+
+1. Con su máscara, determina que el destino pertenece a la misma subred.
+2. Resuelve la dirección de enlace del destino mediante ARP en este ejemplo IPv4.
+3. El tráfico atraviesa el bridge hasta la interfaz de `srv-aso`.
+4. El servidor debe escuchar en TCP 22 y permitir esa conexión.
+
+No hay que pasar por el gateway para esa comunicación local. Si se borra solo
+la ruta por defecto del cliente, **esta conexión por IP puede seguir
+funcionando**; los destinos de otras redes dejarían de ser alcanzables si no
+existen rutas alternativas. No borres rutas para comprobarlo: razona con la
+tabla y consulta el recorrido.
+
+En la consola de `cli-linux`, para el direccionamiento de este ejemplo:
+
+~~~bash
+ip route get 192.168.56.20
+~~~
+
+Debes interpretar interfaz, dirección de origen y presencia o ausencia de
+`via`, no copiar una salida idéntica: los nombres de interfaces pueden cambiar.
+
+### Caso resuelto B: llegar a un repositorio exterior
+
+El invitado envía el tráfico no local a `192.168.56.10`. El nodo necesita
+reenviar entre sus redes y aplicar el NAT previsto; después actúa el NAT
+de VirtualBox. El retorno debe estar permitido y conservar su asociación
+con la conexión iniciada.
+
+Una regla NAT no corrige una IP duplicada, una máscara equivocada o un gateway
+inexistente. Por eso el orden de diagnóstico importa: validar primero un
+tramo evita modificar reglas que no eran la causa.
+
+### Caso resuelto C: funciona por IP, falla por nombre
+
+Si SSH al servidor por su IP funciona, has comprobado una ruta y un puerto.
+Si el mismo servidor por nombre no se encuentra, empieza por la resolución:
+¿ese nombre está registrado en el mecanismo que usa **ese cliente**?
+
+Cambiar el hostname del invitado o su etiqueta en Proxmox no crea
+automáticamente un registro DNS. Tampoco una modificación de `/etc/hosts`
+en el nodo configura la resolución del anfitrión y del cliente.
+
+**Conclusión que puedes documentar:** “El acceso por IP y puerto es correcto;
+la incidencia está acotada a la resolución del nombre probado”. No escribas
+“toda la red funciona”: aún faltan otros recorridos y servicios.
+
 ## NAT, aislamiento y VLAN no son sinónimos
 
 NAT traduce direcciones; un firewall aplica una política de tráfico. Una red
@@ -102,4 +170,3 @@ negativa de autenticación tampoco demuestra que el tráfico esté bloqueado.
 **Aplicación:** dibuja los tres recorridos sobre tu diagrama existente e indica
 en cuál de ellos interviene NAT. Justifica qué cambio investigarías si funciona
 el acceso por IP, pero no por nombre.
-

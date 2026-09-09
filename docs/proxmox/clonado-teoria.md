@@ -34,6 +34,44 @@ ambos comparten ese riesgo.
 pérdida del disco que contiene la base. Para justificar una recuperación debes
 identificar qué objetos necesita cada clon.
 
+## Visualizar la dependencia de la base
+
+Los dibujos representan **qué datos necesita el disco del clon para operar**,
+no el proceso de creación.
+
+**Clon completo, una vez finalizada la copia:**
+
+~~~mermaid
+flowchart TD
+    V["VM clonada"] --> D["Disco propio del clon"]
+    D --> P["Almacenamiento que lo contiene"]
+~~~
+
+**Clon enlazado, cuando el backend lo soporta:**
+
+~~~mermaid
+flowchart TD
+    V["VM clonada"] --> C["Cambios propios del clon"]
+    V --> B["Base de la plantilla"]
+    C --> P["Almacenamiento necesario"]
+    B --> P
+~~~
+
+La dependencia del clon enlazado permite ahorrar copia inicial. No significa
+que puedas editar libremente su disco base como una carpeta compartida.
+Gestiona base y clones mediante operaciones soportadas por Proxmox y no
+elimines volúmenes manualmente.
+
+Ejemplo conceptual: una base contiene 6 GiB de bloques útiles y cada clon
+añade 1 GiB de cambios. Dos clones enlazados comparten la base y añaden sus
+cambios: `6 + 1 + 1 = 8 GiB` en este modelo simplificado. Dos copias completas
+que conservan la base requerirían `6 + 7 + 7 = 20 GiB` en el mismo modelo.
+
+**No es una predicción exacta de consumo:** formato, thin provisioning,
+metadatos, snapshots, compresión y bloques modificados cambian el resultado.
+El ejemplo solo explica por qué compartir una base ahorra espacio a cambio
+de dependencia. Mide el backend real antes de aceptar el presupuesto.
+
 ## Las identidades que pueden duplicarse
 
 Un clon no debe reutilizar sin revisión todo lo que encontró en la base:
@@ -51,6 +89,35 @@ renombra necesariamente el sistema operativo.
 La limpieza debe seguir el mecanismo de la distribución y comprobarse en un
 clon de ensayo. Borrar indiscriminadamente archivos de identidad de una
 máquina en uso puede dejarla inaccesible; no se propone como receta general.
+
+## Dos clones con identidad propia {#ejemplo-identidad}
+
+Quieres desplegar servidor y cliente desde una misma plantilla.
+
+| Dato | Servidor de ejemplo | Cliente de ejemplo |
+|---|---|---|
+| ID en Proxmox | 101 | 102 |
+| Nombre del objeto | `srv-aso` | `cli-linux` |
+| Hostname interior | `srv-aso` | `cli-linux` |
+| IP en la red local | `192.168.56.20/24` | `192.168.56.30/24` |
+| Clave pública de host SSH | Huella propia del servidor | Huella propia del cliente |
+
+Los IDs e IP son orientativos: comprueba disponibilidad y autorización.
+La tabla distingue **etiqueta**, **identidad del sistema** e **identidad de red**.
+
+**Error resuelto:** ambos clones aparecen con nombres distintos en el panel,
+pero responden con la misma IP de la base.
+
+1. Los nombres visibles solo demuestran que cambió la etiqueta del objeto.
+2. Revisa cada clon por consola, evitando conectarlos simultáneamente con
+   una IP duplicada.
+3. Corrige su configuración o el mecanismo de inicialización de la plantilla.
+4. Repite la creación de un clon de ensayo para demostrar que la base es
+   reutilizable, no que has reparado una única instancia.
+
+Si corregiste la plantilla, los clones existentes no reciben automáticamente
+ese arreglo. Debes aplicarles un procedimiento propio o recrearlos cuando
+esté autorizado y sus datos se hayan protegido.
 
 ## Cloud-init y Ansible resuelven momentos diferentes
 
@@ -100,4 +167,3 @@ Responde en `docs/04-plantilla-linux.md`:
 4. ¿Qué harías con clones existentes después de corregir la plantilla?
 
 Aplica estas ideas en el [procedimiento de plantilla, servidor y cliente](plantillas.md).
-

@@ -62,6 +62,76 @@ Ejemplo original del laboratorio:
 Comprueba los IDs libres antes de reutilizar estos números. Renombrar una VM
 en el panel no cambia automáticamente su hostname o su configuración de red.
 
+## Leer una configuración sin modificarla {#ejemplo-configuracion}
+
+El panel y la línea de comandos son formas de consultar los mismos objetos.
+En **la consola de tu nodo Proxmox**, con permisos de lectura sobre tus invitados:
+
+~~~bash
+qm list
+pct list
+pvesm status
+~~~
+
+`qm` consulta las VMs; `pct` los contenedores; `pvesm` el almacenamiento.
+No son comandos que debas instalar dentro de `srv-aso`. Si solo tienes CT,
+que `qm list` no muestre máquinas no significa que hayas perdido esos CT.
+
+Después de comprobar que 101 es el ID de **tu VM**, puedes leer su configuración
+actual. Sustituye el ID cuando corresponda:
+
+~~~bash
+qm config 101 --current 1
+~~~
+
+Fragmento inventado para aprender a interpretarlo, no salida obtenida en el aula:
+
+~~~text
+name: srv-aso
+sockets: 1
+cores: 2
+memory: 2048
+scsi0: local-lvm:vm-101-disk-0,size=24G
+net0: virtio=02:00:00:00:01:01,bridge=vmbr1
+~~~
+
+| Campo | Lectura correcta | Lo que no demuestra |
+|---|---|---|
+| `name` | Etiqueta del objeto en Proxmox | Que el hostname interior coincida |
+| `sockets` y `cores` | Topología virtual; en este ejemplo sencillo, 1 × 2 | Dos núcleos físicos exclusivos |
+| `memory` | Memoria configurada en MiB; 2048 MiB son 2 GiB | Consumo instantáneo ni RAM libre del host |
+| `scsi0` | Volumen asociado al primer disco SCSI indicado | Que haya 24 GiB físicos libres |
+| `net0` | Adaptador VirtIO conectado a `vmbr1` | IP, DNS o servicio funcional |
+
+`qm config` puede mostrar cambios pendientes si no solicitas la configuración
+actual. Incluso una configuración actual no reemplaza las métricas del
+invitado: compara **configurado**, **en ejecución** y **medido**.
+[Referencia qm](https://pve.proxmox.com/pve-docs/qm.1.html).
+
+Para un contenedor propio consulta `pct config ID_DE_TU_CT --current 1`, sustituyendo el
+marcador por su número. No interpretes sus campos como si fueran hardware
+QEMU: el modelo de CT es distinto.
+[Referencia pct](https://pve.proxmox.com/pve-docs/pct.1.html).
+Las consultas pueden mostrar nombres o direcciones que debes revisar antes
+de publicar una captura.
+
+## Seguir una operación de principio a fin
+
+Ejemplo: pulsas **Start** en `srv-aso`. Deben distinguirse tres comprobaciones:
+
+1. Proxmox acepta la operación y la tarea termina correctamente.
+2. El invitado arranca su sistema, observado en consola.
+3. El cliente llega al servicio y completa una operación válida.
+
+Si se cumple el primer punto y falla el segundo, investiga arranque, medio,
+disco y firmware de ese invitado. Si se cumplen los dos primeros, pero falla
+el tercero, revisa red y servicio. Repetir **Start** no aporta información
+cuando el invitado ya está ejecutándose.
+
+Un estado `running` indica que existe una instancia en ejecución; no es un
+certificado de salud de su aplicación. Por la misma razón, una tarea `OK` de
+creación acredita esa tarea concreta, no todo el proyecto.
+
 ## Ciclo de vida y operaciones
 
 La consola permite interactuar con el sistema invitado, mientras que el panel
@@ -104,4 +174,3 @@ Integra las respuestas relevantes en tu memoria y bitácora actuales. No se pide
 otro documento ni un nuevo entregable de inventario.
 
 Continúa con [VM y LXC](virtualizacion.md) y la [interfaz](interfaz.md).
-

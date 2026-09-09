@@ -17,6 +17,28 @@ publiques contraseñas, tokens o claves privadas. En este proyecto no se exige
 automatizar la API de Proxmox: el Ansible obligatorio configura una parte útil
 del servicio invitado.
 
+## Mismo nombre, cuentas diferentes
+
+Ejemplo didáctico: `alumno@pve` y `alumno@pam` pueden representar identidades
+de autenticación diferentes. No pruebes una contraseña contra ambos realms
+por ensayo: identifica dónde existe tu cuenta.
+
+Además, poder ver `srv-aso` en el panel no implica poder abrir su consola,
+modificar sus discos o entrar por SSH al sistema interior. Son capacidades
+distintas que debes verificar con la cuenta y el alcance autorizados.
+
+| Operación de prueba | Resultado previsto para una cuenta solo de consulta |
+|---|---|
+| Consultar métricas autorizadas | Permitido dentro de su alcance |
+| Eliminar un invitado | No permitido |
+| Cambiar la configuración del nodo | No permitido |
+| Entrar por SSH al invitado | Depende de otra cuenta y de sus permisos |
+
+Esta tabla define una intención de acceso; no asegura que cualquier rol llamado
+“lectura” la cumpla exactamente. Contrasta privilegios, rutas y herencia de tu
+configuración real. No cambies la cuenta administrativa principal para ensayar
+restricciones sin una vía de recuperación.
+
 ## Exposición y mantenimiento del nodo
 
 La administración web utiliza HTTPS, habitualmente TCP 8006. Comprueba la
@@ -86,6 +108,79 @@ Dos VMs, dos carpetas o dos particiones del mismo dispositivo comparten su
 fallo físico. Si no dispones de destino independiente aprobado, declara esa
 limitación y acuerda cómo preservar la copia; no inventes independencia.
 
+## Qué sobrevive a un fallo del disco
+
+Ejemplo conceptual. Solo existe la rama externa si has acordado un destino
+realmente independiente y copiado allí los datos; **no se da por disponible**.
+
+~~~mermaid
+flowchart TD
+    D["Disco del equipo"] --> V["Nodo e invitados"]
+    D --> S["Snapshots locales"]
+    D --> L["Backup en el mismo disco"]
+    V -.->|"Copia verificada"| B["Backup en otro dispositivo"]
+~~~
+
+Perder el disco puede afectar a las tres ramas que dependen de él. La flecha
+discontinua representa una copia, no una dependencia del original para leerla.
+Que sobreviva el backup externo tampoco hace aparecer otro ordenador donde
+restaurar: necesitas además un entorno compatible y tiempo para recuperarlo.
+
+Una copia independiente protege frente a ciertos fallos, no frente a todos.
+Si original y copia se pierden por la misma causa, la independencia de
+dispositivo no ha bastado. Documenta alcance y riesgos, sin prometer alta
+disponibilidad en un nodo individual.
+
+## Ensayo resuelto de recuperación {#ejemplo-recuperacion}
+
+Las horas y resultados siguientes son **ficticios**, para aprender a razonar.
+
+### Línea de tiempo y datos recuperables
+
+- 09:00: estado de los datos incluido en una copia que después se completa
+  y valida; contiene la versión A de un archivo.
+- 09:20: el usuario guarda la versión B.
+- 09:40: se pierde el disco del invitado.
+- La copia de las 09:00 sigue disponible en el destino comprobado.
+
+Si solo dispones de esa copia, recuperas A, no B. Han transcurrido 40 minutos
+desde el punto recuperable; no significa que se hayan perdido exactamente
+40 minutos de trabajo continuo. Has perdido los cambios que no estaban
+incluidos ni protegidos por otra vía.
+
+El punto recuperable no tiene por qué coincidir con la hora de finalización
+de la tarea de copia. Registra ambos y comprueba qué estado contiene realmente.
+
+Si tu RPO objetivo era 15 minutos, este escenario **no lo cumple**.
+Una restauración rápida no compensa esa antigüedad de los datos.
+
+### Duración del procedimiento
+
+| Paso cronometrado | Duración del ejemplo |
+|---|---:|
+| Identificar copia y preparar destino | 5 min |
+| Restaurar invitado | 12 min |
+| Revisar arranque e identidad | 3 min |
+| Probar datos y servicio desde el cliente | 5 min |
+| Total medido | 25 min |
+
+Con RTO de 30 minutos, este ensayo cabe en el objetivo **si esos pasos incluyen
+todo el intervalo comprometido**. Si hubo espera previa, búsqueda de hardware
+o descarga de la copia, añade también esos tiempos cuando pertenezcan al
+periodo de indisponibilidad. Cronometrar solo la tarea Proxmox falsea el resultado.
+
+### Estado del sistema y estado del archivo
+
+Una tarea de restauración `OK` demuestra que terminó esa operación.
+Todavía debes comprobar arranque, configuración necesaria, hash del archivo
+de prueba y acceso real desde el cliente. El hash acredita que los contenidos
+comparados coinciden; no demuestra por sí solo que permisos, usuarios y todos
+los datos del servicio estén recuperados.
+
+Para ensayar no hace falta destruir el original: usa una restauración
+autorizada a otro ID libre, inicialmente aislada si duplica identidad.
+Explica en tu memoria qué parte del incidente simulas y qué no has probado.
+
 ## Restaurar sin provocar otro incidente
 
 1. Registra backup elegido, alcance, fecha, ubicación y requisitos.
@@ -111,4 +206,3 @@ no aporta esa continuidad. No se requieren clúster ni Ceph en la práctica.
 disco del anfitrión. Indica qué copia serviría en cada caso y qué no podrías
 recuperar. Integra la respuesta en
 [las fases de copias y validación de la práctica](../proyecto/practica.md#15-fase-9-copias-y-restauracion).
-
