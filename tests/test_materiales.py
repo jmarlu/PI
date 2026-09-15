@@ -56,6 +56,12 @@ class MaterialsTest(unittest.TestCase):
         inventory = (self.project / "docs/01-inventario-hardware.md").read_text()
         for word in ("instalar", "limitaciones", "criticos"):
             self.assertIn(word, inventory.lower())
+        journal = (self.project / "docs/00-bitacora.md").read_text()
+        memory = (self.project / "docs/10-memoria-tecnica.md").read_text()
+        for text in ("Acciones realizadas", "Pruebas y resultados", "Siguiente paso"):
+            self.assertIn(text, journal)
+        for text in ("Objetivo comprobable", "criterios de aceptacion", "no copies el"):
+            self.assertIn(text, memory)
 
     def test_existing_work_is_preserved(self):
         readme = self.project / "README.md"

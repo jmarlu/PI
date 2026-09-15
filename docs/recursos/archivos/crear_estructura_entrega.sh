@@ -151,15 +151,19 @@ EOF_FICHA
 cat > "$project_dir/docs/00-bitacora.md" <<'EOF_BITACORA'
 # Bitacora de sesiones
 
+La bitacora es el registro cronologico del trabajo. Anade una entrada al final
+de cada sesion y conserva las anteriores. Escribe datos comprobables y enlaza
+las evidencias utiles; evita frases generales como "he trabajado en Proxmox".
+
 ## Sesion 01 - FECHA
 
 - Objetivo: iniciar GitHub y la documentacion Markdown.
-- Trabajo realizado: PENDIENTE.
-- Decisiones y motivos: PENDIENTE.
-- Pruebas y resultados: PENDIENTE.
+- Acciones realizadas: PENDIENTE: configuraciones, cambios o investigacion.
+- Decisiones y motivos: PENDIENTE: eleccion realizada y alternativas valoradas.
+- Pruebas y resultados: PENDIENTE: resultado esperado, comando o metodo y resultado obtenido.
 - Documentos o evidencias: [Ficha inicial](00-ficha-inicial.md).
 - Incidencias y solucion o estado pendiente: PENDIENTE.
-- Siguiente paso: PENDIENTE.
+- Siguiente paso: PENDIENTE: accion concreta para la proxima sesion.
 
 Anadir una entrada con esta estructura en cada sesion. El historial de
 GitHub registra los commits; no hace falta incluir el hash del propio
@@ -294,11 +298,29 @@ done
 cat > "$project_dir/docs/10-memoria-tecnica.md" <<'EOF_MEMORIA'
 # Memoria tecnica: nodo Proxmox individual
 
-## Resumen y objetivos
+La memoria presenta el resultado tecnico por temas. Debe explicar como esta
+construido el laboratorio, por que se tomaron las decisiones y con que pruebas
+se demostro su funcionamiento. Usa la bitacora como fuente, pero no copies el
+diario completo: resume la configuracion final, los resultados y las
+limitaciones que sigan abiertas.
 
-PENDIENTE: iniciar en la sesion 1 y completar durante el proyecto.
+## Resumen
 
-## Necesidad, alcance y criterios de aceptacion
+PENDIENTE: describir en un parrafo que se va a construir, para quien y con que
+resultado esperado. Revisar este resumen al cerrar el proyecto.
+
+## Necesidad y objetivos
+
+Necesidad que atiende el laboratorio: PENDIENTE.
+
+- Objetivo comprobable 1: PENDIENTE.
+- Objetivo comprobable 2: PENDIENTE.
+- Objetivo comprobable 3: PENDIENTE.
+
+## Alcance y criterios de aceptacion
+
+PENDIENTE: indicar que incluye el proyecto, que queda fuera y que pruebas
+permitiran considerar aceptado cada resultado principal.
 
 ## Modalidad e inventario
 

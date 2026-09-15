@@ -34,6 +34,16 @@ estructura departamental original, fuera de este sitio.
 
 ## Correcciones realizadas
 
+### Bitacora y memoria
+
+- La primera sesion explica que anotar en cada entrada de bitacora, con un
+  ejemplo que distingue un registro comprobable de una frase general.
+- Se diferencia el diario cronologico de la memoria organizada por temas y se
+  indica como trasladar decisiones, configuraciones, pruebas y limitaciones.
+- La plantilla descargable pide acciones, resultados esperados y obtenidos,
+  decisiones justificadas, siguiente paso concreto, resumen, necesidad,
+  objetivos comprobables, alcance y criterios de aceptacion.
+
 ### Ampliación de teoría de la web
 
 - Siete capítulos nuevos de Proxmox: arquitectura, VM/LXC y anidación,

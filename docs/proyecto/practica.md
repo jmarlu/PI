@@ -159,8 +159,10 @@ numero de commits, sino el contenido, la continuidad y la autoria.
 1. Crea tu repositorio individual en GitHub.
 2. Publica `README.md`, `.gitignore`, `docs/00-ficha-inicial.md` y
    `docs/00-bitacora.md`, junto con la estructura inicial.
-3. Inicia `docs/10-memoria-tecnica.md` con objetivos e indice; se
-   completara a lo largo del proyecto.
+3. Inicia `docs/10-memoria-tecnica.md` con resumen, necesidad, objetivos
+   comprobables, alcance e indice. Al terminar cada sesion, pasa de la bitacora
+   a la memoria las decisiones, configuraciones y resultados ya depurados; no
+   copies el diario completo. Se completara a lo largo del proyecto.
 4. Comprueba los enlaces del README y el primer commit en GitHub.
 5. Entrega la URL en Aules y verifica el acceso del profesor.
 
@@ -757,6 +759,13 @@ Estructura minima:
 La memoria debe permitir que otra persona reconstruya el laboratorio. No
 entregues solo capturas: cada captura debe ir acompanada de explicacion,
 comando o decision tecnica.
+
+En cada apartado explica cinco elementos cuando sean aplicables: que necesidad
+se resuelve, que configuracion final se utiliza, por que se eligio, como se
+comprobo y que limitaciones quedan. Enlaza el documento detallado o la evidencia
+en vez de duplicarlos. La bitacora conserva la cronologia, incluidos intentos y
+errores; la memoria presenta el resultado tecnico revisado y las conclusiones
+que se sostienen con esas pruebas.
 
 ## 19. Checklist final
 

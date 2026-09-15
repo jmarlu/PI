@@ -71,14 +71,52 @@ Completa con el editor:
 |---|---|
 | `README.md` | Identificador, objetivo, modalidad o decision pendiente, estado e indice con enlaces |
 | `docs/00-ficha-inicial.md` | URL de GitHub, modalidad prevista, recursos conocidos y dudas |
-| `docs/00-bitacora.md` | Fecha, objetivo, trabajo hecho, comprobaciones, incidencias y siguiente paso |
-| `docs/10-memoria-tecnica.md` | Titulo, objetivos e indice inicial del proyecto |
+| `docs/00-bitacora.md` | Primera entrada con fecha, objetivo, acciones, pruebas, decisiones, incidencias y siguiente paso concreto |
+| `docs/10-memoria-tecnica.md` | Titulo, resumen inicial, necesidad, objetivos comprobables, alcance e indice enlazado |
 | `.gitignore` | Exclusiones de credenciales, ficheros locales, ISOs, discos y backups |
 | `evidencias/README.md` | Criterio de nombres y relacion entre evidencia y documento explicativo |
 
 Los documentos de las fases posteriores pueden quedar como plantillas.
 Los ejemplos de Bash y Ansible se estudiaran y adaptaran en sus sesiones;
 su existencia hoy no demuestra todavia que domines la automatizacion.
+
+### Que debes anotar en la bitacora
+
+La bitacora cuenta el trabajo de cada sesion en orden cronologico. Al cerrar
+la clase, anade una entrada nueva y conserva las anteriores. Escribe hechos
+concretos que otra persona pueda comprobar:
+
+- **Objetivo:** que resultado querias conseguir durante la sesion.
+- **Acciones realizadas:** que configuraste, cambiaste o investigaste; incluye
+  comandos relevantes, pero no pegues toda la salida de la terminal.
+- **Pruebas y resultados:** que comprobaste, que resultado esperabas y que
+  resultado obtuviste. Enlaza la evidencia si aporta informacion.
+- **Decisiones y motivos:** por que elegiste una red, un recurso, una opcion o
+  una solucion frente a las alternativas consideradas.
+- **Incidencias:** describe el sintoma, la causa si la conoces, los intentos y
+  el estado final. Si continua abierta, indica que falta comprobar.
+- **Siguiente paso:** una accion concreta para la proxima sesion, no solo
+  «continuar» o «terminar».
+
+No conviertas la bitacora en una lista de asistencia. «He trabajado con
+Proxmox» no permite revisar el avance; «he creado `vmbr1`, he comprobado la
+conectividad entre servidor y cliente y queda pendiente el acceso a Internet»
+si explica el resultado y el trabajo pendiente.
+
+### Como empezar y mantener la memoria
+
+La memoria explica el proyecto por temas y debe poder leerse sin conocer el
+orden de las clases. En la primera sesion deja escritos un resumen provisional,
+la necesidad que atendera el laboratorio, de dos a cuatro objetivos que puedas
+comprobar y el alcance inicial: que vas a desplegar y que queda fuera. Conserva
+el indice propuesto y enlaza cada documento tecnico desde su apartado.
+
+Cada semana, usa la bitacora para recordar lo ocurrido y actualiza en la
+memoria la explicacion ya depurada: configuracion final, motivo de la decision,
+prueba que la valida, resultado y limitaciones. No copies todas las entradas de
+la bitacora ni dejes una sucesion de capturas. La bitacora responde «que paso
+en esta sesion»; la memoria responde «como esta construido, por que se hizo asi
+y como se ha demostrado que funciona».
 
 ## 5. Practicar Markdown
 
