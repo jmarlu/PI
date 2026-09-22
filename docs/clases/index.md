@@ -39,6 +39,9 @@ previstos para las 33 clases.
 Consulta también la [presentación del proyecto](presentacion.md) y la
 [práctica completa](../proyecto/practica.md).
 
+Consulta el [curso CEP de apoyo por sesiones](../recursos/fuentes.md#curso-cep-de-apoyo-por-sesiones)
+para repasar las lecciones seleccionadas y sus adaptaciones a nuestro laboratorio.
+
 ## 2. Secuencia semanal
 
 | Sesion | Bloque | Explicacion y demostracion | Trabajo del alumnado | Evidencia de salida |

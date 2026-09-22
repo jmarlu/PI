@@ -26,6 +26,44 @@ de tu equipo anfitrión y de VirtualBox cuando lo utilices, no solo páginas gen
 - [Kernel Linux: presión de recursos PSI](https://docs.kernel.org/accounting/psi.html).
 - [Cloud-init: limpieza de una base](https://docs.cloud-init.io/en/latest/reference/cli.html#clean).
 
+## Curso CEP de apoyo por sesiones
+
+[Introducción a Proxmox VE, de José Domingo Muñoz Rodríguez (IES Gonzalo Nazareno / CEP)](https://github.com/iesgn/curso_proxmox_cep).
+Consulta revisada el 15 de septiembre de 2026. Los enlaces siguientes sirven
+para repasar explicaciones y consultar los vídeos incluidos en las lecciones.
+
+La instalación del curso utiliza Proxmox VE 7.1 sobre Debian 11 y el laboratorio
+VirtualBox 6.1.34. Contrasta capturas, opciones y comandos con los manuales de
+la versión instalada. Para la red sigue el diseño de esta práctica y la
+[guía local de VirtualBox](../proxmox/virtualbox.md): NAT para salida y
+solo-anfitrión para gestión/laboratorio según el diseño autorizado.
+
+Las tareas y evidencias que debes entregar son las de nuestra
+[práctica](../proyecto/practica.md). Las etiquetas «obligatoria» y «voluntaria»
+del curso externo corresponden a aquel curso: aquí las copias y la restauración
+son obligatorias. Mantén también el trabajo de inventario, GitHub, servicio ASO,
+Bash, Ansible, rendimiento y defensa indicado en nuestras sesiones.
+
+| Sesión | Consulta de apoyo | Aplicación a nuestra práctica |
+|---|---|---|
+| 4. Red de laboratorio | [Redes](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo7/introduccion.md) · [Red interna](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo7/red_interna.md) | Aplicar el direccionamiento y aislamiento del diseño aprobado; en VirtualBox, seguir la guía local de NAT y solo-anfitrión. |
+| 7. Instalación | [Instalación](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo2/instalacion.md) · [Laboratorio VirtualBox](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo2/laboratorio.md) | El ejemplo usa Proxmox VE 7.1 y VirtualBox 6.1.34. Adaptar a la versión autorizada y al diseño local; el adaptador puente del curso no es la configuración de referencia de esta práctica. |
+| 8. Acceso al nodo | [Acceso web](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo2/acceso.md) · [Interfaz](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo2/vista_general.md) | Comprobar opciones en la versión instalada. Para repositorios y actualización, seguir la documentación oficial y la guía de clase. |
+| 10. Almacenamiento | [Almacenamiento](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo4/almacenamiento.md) · [Directory](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo4/directory.md) | Usar los discos y la capacidad previstos en el inventario; justificar dónde se guardan las copias. |
+| 11. Usuarios y permisos | [Usuarios y grupos](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo8/usuarios.md) · [Permisos](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo8/permisos.md) | Aplicar roles al ámbito necesario y demostrar una operación permitida y otra denegada. |
+| 13. Linux base | [VM Linux](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo3/creacion_linux.md) · [Contenedor LXC](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo6/contenedor.md) | Elegir VM o LXC según la modalidad validada. La actividad Windows del curso no forma parte de esta entrega. |
+| 14. Agente del invitado | [QEMU guest agent](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo3/agent.md) | Aplicable a VMs QEMU/KVM; en LXC seguir la preparación de acceso de nuestra guía. |
+| 15. Plantilla y clon | [Plantillas](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo5/plantillas.md) · [Clonación](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo5/clonacion.md) | Completar con la limpieza e identidad de clones exigidas en la práctica; distinguir plantilla VM de plantilla LXC. |
+| 16. Validación de clones | [Clonación](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo5/clonacion.md) | Verificar arranque, acceso e identidades diferenciadas siguiendo el criterio de aceptación local. |
+| 17. Servidor | [Gestión de VMs](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo3/gestion.md) · [Gestión de LXC](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo6/gestion.md) | Desplegar srv-aso desde la plantilla propia y registrar sus recursos e identidad. |
+| 18. Cliente | [Gestión de VMs](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo3/gestion.md) · [Gestión de LXC](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo6/gestion.md) | Desplegar cli-linux y comprobar que su identidad y dirección no coinciden con las del servidor. |
+| 19. Conectividad | [VM en red interna](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo7/conexion_red_intena.md) · [LXC en red interna](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo7/conexion_red_intena2.md) | Adaptar interfaces e IP al diagrama propio y documentar los recorridos cliente-servidor. |
+| 29. Copias | [Snapshots](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo5/snapshot.md) · [Backups](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo5/backup.md) | En este proyecto son obligatorias la copia del invitado y la del servicio. Distinguir snapshot de backup. |
+| 30. Restauración | [Backups y restauración](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo5/backup.md) | Demostrar la recuperación del invitado y del servicio, comprobar datos desde el cliente y registrar tiempos reales. |
+| 32. Cortafuegos | [Cortafuegos Proxmox](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo7/cortafuegos.md) | Revisar la documentación oficial de la versión instalada y probar reglas dentro del laboratorio autorizado conservando el acceso de gestión. |
+
+Para repasar conceptos antes de trabajar con invitados: [Virtualización](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo1/virtualizacion.md) · [Tipos de virtualización](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo1/tipos.md) · [Proxmox y LXC](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo6/introduccion.md).
+
 ## VirtualBox local
 
 - [Virtualización anidada](https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/AdvancedTopics.html).
