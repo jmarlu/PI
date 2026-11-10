@@ -6,6 +6,14 @@ El Proxmox del centro no se utiliza.
 Necesitas VirtualBox instalado, espacio local y permisos para configurar tus VMs
 y sus redes. No necesitas borrar LliureX ni disponer de otro ordenador dedicado.
 
+## Consulta CEP para preparar la demostración¶
+
+[Instalación](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo2/instalacion.md) · [Laboratorio VirtualBox](https://github.com/iesgn/curso_proxmox_cep/blob/main/modulo2/laboratorio.md).
+
+El ejemplo usa Proxmox VE 7.1 y VirtualBox 6.1.34. Adaptar a la versión autorizada y al diseño local; el adaptador puente del curso no es la configuración de referencia de esta práctica.
+
+Consultar las notas comunes de versión y alcance antes de utilizar las lecciones o sus vídeos.
+
 ## 1. Comprobar el anfitrión
 
 En LliureX, desde la terminal del **anfitrión**, no desde Proxmox:
