@@ -184,7 +184,7 @@ class CourseTest(unittest.TestCase):
     def test_local_virtualbox_and_all_sessions(self):
         practice = (ROOT / "docs/proyecto/practica.md").read_text()
         self.assertIn("VirtualBox", practice)
-        self.assertIn("sistema anfitrion", practice)
+        self.assertIn("sistema anfitrión", practice)
         for text in ("dentro del Proxmox del centro", "VM del centro", "Tipo host"):
             self.assertNotIn(text, practice)
         sessions = (ROOT / "docs/clases/index.md").read_text()

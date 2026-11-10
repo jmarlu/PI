@@ -59,7 +59,9 @@ PENDIENTE: explicar la necesidad que resolvera el laboratorio.
 
 ## Modalidad
 
-PENDIENTE: fisica o virtualizada; justificar la eleccion.
+Montaje de clase: Proxmox en VirtualBox. Describe tu equipo y los recursos
+asignados a la VM. La instalación directa en equipo propio dedicado es
+opcional y requiere autorización del profesor.
 
 ## Indice de documentacion
 
@@ -138,7 +140,7 @@ cat > "$project_dir/docs/00-ficha-inicial.md" <<'EOF_FICHA'
 | Identificador del alumno | PENDIENTE |
 | URL GitHub | PENDIENTE |
 | Acceso docente comprobado | PENDIENTE |
-| Modalidad fisica o virtualizada | PENDIENTE |
+| Montaje previsto | Proxmox en VirtualBox; instalación física solo como opción autorizada |
 | Recursos conocidos | PENDIENTE |
 | Nombre del nodo | PENDIENTE |
 | Servicio ASO previsto | PENDIENTE |

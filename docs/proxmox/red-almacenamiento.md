@@ -10,9 +10,15 @@ Pide subred, IPs, gateway, DNS y bridge/VLAN autorizados. Una red sin salida
 puede ser adecuada para pruebas, pero necesitará una vía aprobada para instalar
 paquetes. No añadas un servidor DHCP al bridge del aula.
 
-Ejemplo **ilustrativo para una red física autorizada**; sustituye los datos
-por los de tu diseño. Para la modalidad virtual utiliza el
-[montaje local en VirtualBox](virtualbox.md#red-local), con red solo-anfitrión:
+Para el montaje habitual de clase, sigue la
+[red local en VirtualBox](virtualbox.md#red-local), con NAT para salida y
+red solo-anfitrión para gestión y laboratorio. Las comprobaciones de esta
+página también te sirven para revisar ese montaje.
+
+## Ejemplo para la instalación física opcional
+
+Este ejemplo se aplica solo a una instalación directa en equipo propio
+autorizada por el profesor. Sustituye las direcciones por las de tu diseño:
 
 | Sistema | IP de ejemplo | Papel |
 |---|---|---|
@@ -111,5 +117,5 @@ no son núcleos exclusivos.
 `docs/02-diagrama-red.md` debe contener diagrama, tabla IP, interfaces,
 límites de acceso, supuestos y pruebas. Relaciona el presupuesto de storage
 con el inventario. No sustituyas las
-[tres respuestas de viabilidad](../proyecto/practica.md#7-fase-1-inventario-investigado-y-viabilidad)
+[tres respuestas de viabilidad](../proyecto/fase-1-inventario.md)
 por el ejemplo de esta página.

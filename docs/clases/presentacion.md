@@ -17,16 +17,16 @@ Antes de inventariar o instalar:
 3. Publicar el primer commit y entregar la URL en Aules.
 4. Comprobar el acceso del profesor.
 
-## 3. Dos modalidades
+## 3. El montaje de clase
 
-| Física | Virtual |
-|---|---|
-| Equipo antiguo autorizado para borrar | Tu equipo de trabajo conserva su sistema |
-| Proxmox instalado directamente | Proxmox instalado en una VM de VirtualBox local |
-| Recursos dedicados al nodo | Recursos repartidos entre host y VM |
+Trabajaremos con **Proxmox en una VM de VirtualBox en tu equipo**. Conservas
+LliureX u otro sistema anfitrión y repartes los recursos entre este y la VM.
+El servidor y el cliente se crearán dentro de Proxmox.
 
-**No se cuenta con el Proxmox del centro.** En ambas rutas, el servidor y el
-cliente se despliegan dentro de tu Proxmox.
+No hay ordenadores dedicados para todo el grupo. Si dispones de uno propio,
+la instalación directa queda como opción, con autorización del profesor
+y permiso para borrar el disco. Se mantienen las mismas evidencias.
+**El Proxmox del centro no forma parte de los recursos del proyecto.**
 
 ## 4. Investigar antes de instalar
 
@@ -72,4 +72,4 @@ preguntas sobre límites, red, permisos, automatización y recuperación.
 La entrega identifica URL y commit completo publicado.
 
 [Comienza la primera sesión](../proyecto/primera-sesion.md) y conserva como
-referencia la [práctica completa](../proyecto/practica.md).
+referencia la [guía de la práctica](../proyecto/practica.md).

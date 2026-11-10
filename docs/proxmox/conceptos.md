@@ -1,11 +1,6 @@
 # Qué es Proxmox y qué vas a construir
 
-Proxmox VE administra máquinas virtuales KVM y contenedores LXC desde una
-interfaz web. Llamamos **nodo** al sistema Proxmox que aloja tus invitados.
-En modalidad física se ejecuta sobre el ordenador dedicado; en VirtualBox,
-ese mismo nodo es también un invitado de la capa exterior. Los términos
-anfitrión e invitado dependen de qué capa estés describiendo.
-Consulta la [presentación oficial](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview).
+Proxmox VE permite administrar máquinas virtuales KVM y contenedores LXC desde un panel web. El sistema que ejecuta Proxmox y aloja esas máquinas se llama **nodo**. Puede estar instalado directamente en un ordenador o dentro de una VM de VirtualBox. En el segundo caso, Proxmox es un invitado de VirtualBox y, a la vez, el anfitrión del servidor y del cliente que crearás dentro de él. Consulta la [presentación oficial](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview).
 
 ## Para qué virtualizamos un servidor
 
@@ -14,11 +9,7 @@ probarlo. Si instalas todo en un único sistema, comparten configuración,
 paquetes y ciclo de reinicio. Además, una prueba hecha desde el propio servidor
 puede no recorrer la misma red que utilizaría un cliente.
 
-Con Proxmox defines dos sistemas separados sobre el hardware disponible.
-Puedes asignarles recursos distintos, apagar uno sin apagar voluntariamente
-el otro y guardar copias con un alcance identificado. La separación simplifica
-el ensayo y la recuperación, pero **no duplica el ordenador físico**:
-un fallo del dispositivo compartido puede afectar a ambos.
+Con Proxmox puedes crear un servidor y un cliente separados, asignarles recursos distintos y administrar sus arranques y copias. Aunque se comporten como dos sistemas, utilizan el mismo ordenador físico. Por eso un fallo del disco o del equipo que comparten puede afectar a ambos.
 
 Una VM tampoco es solo una ventana de consola. Sigue ejecutándose aunque
 cierres esa ventana o el navegador, siempre que su nodo siga funcionando.
@@ -51,7 +42,7 @@ se aplican al servidor seleccionado, no al nodo `192.168.56.10`.
 - Apagas la VM Proxmox desde VirtualBox: interrumpes también los invitados que
   dependían de ella. Tener sus consolas cerradas no los protege.
 
-En modalidad física se elimina la capa VirtualBox, no la separación entre
+En la instalación física opcional se elimina la capa VirtualBox, no la separación entre
 nodo, servidor y cliente. El equipo de administración accede al nodo por la
 red autorizada; no hace falta ejecutar el navegador dentro de Proxmox.
 
@@ -64,7 +55,7 @@ red autorizada; no hace falta ejecutar el navegador dentro de Proxmox.
 | Tu nodo Proxmox | Crear y administrar tu plantilla, servidor y cliente | Instalar Samba aquí |
 | Invitados `srv-aso` y `cli-linux` | Servicio Linux y pruebas | Confundir su consola con la del nodo |
 
-En la modalidad física, tu Proxmox se instala directamente en el equipo autorizado.
+En la instalación física opcional, tu Proxmox se instala directamente en el equipo autorizado.
 En la virtualizada, el host ejecuta VirtualBox, y Proxmox es una VM suya:
 
 ~~~mermaid
@@ -77,7 +68,7 @@ flowchart TD
     C -->|"Pruebas del servicio"| S
 ~~~
 
-Este diagrama explica las capas, no la red física. En la modalidad física
+Este diagrama explica las capas, no la red física. En la instalación física opcional
 Proxmox se instala directamente en el equipo dedicado y no se usa VirtualBox.
 El servidor Proxmox del centro queda fuera de ambas modalidades.
 

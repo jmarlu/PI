@@ -2,9 +2,7 @@
 
 ## Estructura y orden
 
-Un playbook es una lista de plays. Cada play selecciona hosts y define tareas.
-En el modelo habitual las tareas se aplican en orden sobre los destinos
-seleccionados; la ejecución entre hosts depende de la estrategia y paralelismo.
+Un **playbook** es un archivo YAML que contiene uno o varios bloques llamados **plays**. Cada play indica sobre qué máquinas se trabajará y qué tareas se ejecutarán. Las tareas se realizan normalmente en el orden escrito; cuando hay varias máquinas, la estrategia y el paralelismo determinan cómo avanza la ejecución entre ellas.
 
 ~~~yaml
 ---
@@ -24,7 +22,7 @@ Este ejemplo necesita un inventario con grupo `laboratorio` y conexión local.
 El [laboratorio completo](laboratorio.md) aporta ambos. Un fragmento de tareas
 no se puede ejecutar como playbook completo sin su contexto.
 
-## Elegir módulos por su contrato
+## Elegir el módulo adecuado {#elegir-modulos-por-su-contrato}
 
 | Necesidad | Módulo habitual | Qué debes decidir |
 |---|---|---|
@@ -68,11 +66,9 @@ configuración incompleta.
 [Bucles](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_loops.html)
 y [condiciones](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_conditionals.html).
 
-## Register y semántica de resultado
+## Guardar e interpretar el resultado con register {#register-y-semantica-de-resultado}
 
-`register` conserva la estructura de resultado de una tarea. No todos los módulos
-devuelven `stdout` o `rc`. Por ejemplo, `slurp` entrega contenido codificado y
-metadatos; hay que consultar su contrato antes de interpretar la respuesta.
+La opción `register` guarda el resultado de una tarea en una variable para poder utilizarlo después. Los datos que contiene dependen del módulo. Un comando puede devolver `stdout` y `rc`, mientras que `slurp` devuelve el contenido del archivo codificado y otros datos. Consulta qué devuelve el módulo antes de escribir una condición que utilice esa respuesta.
 
 En tareas `command` de diagnóstico puede tener sentido `changed_when: false`,
 porque leer un estado no modifica la configuración. Una tarea de reparación no
@@ -110,9 +106,7 @@ ejecutado antes de esa prueba. `meta: flush_handlers` permite forzar ese punto;
 
 ## Errores: Ansible no es una transacción
 
-Si la tarea cuarta falla, las tres primeras pueden haber cambiado el sistema.
-No se deshacen automáticamente. Diseña validación previa, copias, operaciones
-idempotentes y un procedimiento de recuperación.
+Si falla la cuarta tarea, los cambios de las tres anteriores pueden seguir aplicados. Ansible no los deshace automáticamente. Por eso conviene comprobar las entradas antes de actuar, conservar las copias necesarias y preparar un procedimiento para recuperar el servicio si la ejecución queda incompleta.
 
 `block`, `rescue` y `always` permiten agrupar operaciones, tratar ciertos
 fallos y ejecutar acciones finales. No capturan todas las clases de error:

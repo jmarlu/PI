@@ -2,9 +2,7 @@
 
 ## Administrar con alcance limitado
 
-Autenticación pregunta quién eres; autorización, qué puedes hacer sobre qué
-objetos. Proxmox utiliza usuarios, realms, roles y permisos asociados a rutas.
-Un realm identifica el origen de autenticación, no un invitado del proyecto.
+La **autenticación** comprueba tu identidad al iniciar sesión. La **autorización** determina qué acciones puedes realizar y sobre qué recursos. En Proxmox intervienen la cuenta, el dominio de autenticación o realm, el rol y la ruta del recurso al que se aplica el permiso. El realm indica dónde se comprueba la cuenta; no identifica una VM o un contenedor.
 
 Una cuenta de lectura para observar métricas no necesita permiso para borrar
 discos. Un token de API tampoco debe tener más alcance que la tarea que lo
@@ -91,9 +89,7 @@ Documenta cualquier dato externo y su protección específica.
 
 ## RPO, RTO y dominio de fallo
 
-**RPO** expresa cuánta antigüedad de datos se tolera perder. **RTO** expresa el
-tiempo objetivo para recuperar el servicio. Son objetivos; la prueba determina
-si tu procedimiento los alcanza.
+El **RPO** indica cuánta información reciente se acepta perder, expresada como tiempo. Por ejemplo, un RPO de una hora exige poder recuperar los datos sin perder más de esa última hora. El **RTO** fija cuánto tiempo se acepta tardar en recuperar el servicio. Son objetivos que después se comparan con los resultados del ensayo.
 
 Ejemplo original: haces una copia al terminar la clase semanal. Si se pierde
 el disco justo antes de la siguiente copia, podrías perder el trabajo posterior
@@ -103,10 +99,7 @@ Si restaurar el invitado tarda 12 minutos y validar el servicio otros 8,
 el tiempo medido no son solo los 12 minutos de la tarea Proxmox. Añade las
 operaciones necesarias para que el usuario pueda trabajar.
 
-Un dominio de fallo agrupa recursos que pueden perderse por una misma causa.
-Dos VMs, dos carpetas o dos particiones del mismo dispositivo comparten su
-fallo físico. Si no dispones de destino independiente aprobado, declara esa
-limitación y acuerda cómo preservar la copia; no inventes independencia.
+Llamamos **dominio de fallo** al conjunto de recursos que pueden perderse por una misma causa. Por ejemplo, dos VMs guardadas en el mismo disco pueden perderse si ese disco se avería, aunque tengan nombres distintos. Si no dispones de otro dispositivo autorizado para la copia, deja escrita esa limitación y acuerda cómo conservarla.
 
 ## Qué sobrevive a un fallo del disco
 
@@ -121,10 +114,7 @@ flowchart TD
     V -.->|"Copia verificada"| B["Backup en otro dispositivo"]
 ~~~
 
-Perder el disco puede afectar a las tres ramas que dependen de él. La flecha
-discontinua representa una copia, no una dependencia del original para leerla.
-Que sobreviva el backup externo tampoco hace aparecer otro ordenador donde
-restaurar: necesitas además un entorno compatible y tiempo para recuperarlo.
+Si se pierde el disco, pueden perderse también las tres ramas que dependen de él. La flecha discontinua representa una copia que se puede leer sin el original. Aunque esa copia externa se conserve, necesitarás un equipo compatible y tiempo para restaurarla.
 
 Una copia independiente protege frente a ciertos fallos, no frente a todos.
 Si original y copia se pierden por la misma causa, la independencia de
@@ -205,4 +195,4 @@ no aporta esa continuidad. No se requieren clúster ni Ceph en la práctica.
 **Aplicación:** plantea pérdida del invitado, pérdida del nodo y pérdida del
 disco del anfitrión. Indica qué copia serviría en cada caso y qué no podrías
 recuperar. Integra la respuesta en
-[las fases de copias y validación de la práctica](../proyecto/practica.md#15-fase-9-copias-y-restauracion).
+[las fases de copias y validación de la práctica](../proyecto/fase-9-copias.md).

@@ -9,6 +9,11 @@ const output = process.env.SCREENSHOT_DIR || "/tmp/pi-web-capturas";
 fs.mkdirSync(output, { recursive: true });
 const routes = [
   "", "proyecto/primera-sesion/", "proyecto/practica/", "proyecto/evaluacion/",
+  "proyecto/fase-0-inicio/", "proyecto/fase-1-inventario/", "proyecto/fase-2-red/",
+  "proyecto/fase-3-instalacion/", "proyecto/fase-4-configuracion/", "proyecto/fase-5-plantilla/",
+  "proyecto/fase-6-despliegue/", "proyecto/fase-7-servicio/", "proyecto/fase-8-automatizacion/",
+  "proyecto/fase-9-copias/", "proyecto/fase-10-rendimiento/", "proyecto/fase-11-seguridad/",
+  "proyecto/entrega/",
   "clases/", "clases/presentacion/", "proxmox/conceptos/", "proxmox/interfaz/",
   "proxmox/instalacion/", "proxmox/virtualbox/", "proxmox/red-almacenamiento/",
   "proxmox/plantillas/", "proxmox/arquitectura/", "proxmox/virtualizacion/",
@@ -42,7 +47,7 @@ const routes = [
         assert.ok(layout.width <= layout.viewport + 1, JSON.stringify({ route, ...layout }));
         assert.deepEqual(layout.brokenImages, [], route);
         if (route === "proxmox/conceptos/" || route === "proxmox/virtualbox/" ||
-            route === "proxmox/red-almacenamiento/" || route === "proyecto/practica/") {
+            route === "proxmox/red-almacenamiento/" || route === "proyecto/fase-2-red/") {
           await page.locator(".mermaid").first().scrollIntoViewIfNeeded();
           // Material aloja el SVG en un shadow root cerrado; CDP permite inspeccionarlo.
           const diagram = page.locator("div.mermaid").first();
@@ -82,13 +87,17 @@ const routes = [
         if (route === "proyecto/practica/") {
           const body = await page.locator("article").innerText();
           assert.ok(body.includes("VirtualBox"));
+          assert.equal(await page.locator('article table a[href*="fase-"]').count(), 12);
+        }
+        if (route === "proyecto/fase-1-inventario/") {
+          const body = await page.locator("article").innerText();
           assert.ok(body.includes("Pregunta 1."));
           assert.ok(body.includes("Pregunta 2."));
           assert.ok(body.includes("Pregunta 3."));
         }
         assert.equal(await page.locator('.md-sidebar--primary a[href*="/linux/"]').count(), 0);
         assert.equal(await page.locator('a[href*="clases/explicaciones"]').count(), 0);
-        if (["", "clases/", "clases/presentacion/", "proxmox/virtualbox/", "proyecto/practica/", "recursos/descargas/",
+        if (["", "clases/", "clases/presentacion/", "proxmox/virtualbox/", "proyecto/practica/", "proyecto/fase-1-inventario/", "recursos/descargas/",
              "ansible/laboratorio/", "ansible/variables-plantillas/", "proxmox/recursos/"].includes(route)) {
           await page.screenshot({
             path: path.join(output, (route.replaceAll("/", "-") || "inicio") + viewport.width + ".png"),

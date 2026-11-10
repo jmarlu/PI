@@ -2,13 +2,9 @@
 
 ## Capacidad, asignación y consumo
 
-**Capacidad** es lo disponible; **asignación**, lo configurado para una carga;
-**consumo**, lo utilizado en un momento. Confundirlos produce presupuestos
-imposibles. Dar 40 GiB de disco virtual a un invitado no demuestra que existan
-40 GiB físicos libres ni que se estén utilizando todos.
+Al repartir los recursos conviene distinguir tres cantidades. La **capacidad** es lo que tiene el equipo; la **asignación** es lo que configuras para una máquina virtual; y el **consumo** es lo que esa máquina utiliza en un momento concreto. Por ejemplo, asignar un disco virtual de 40 GiB no significa que ya esté ocupando 40 GiB ni que el disco físico tenga todo ese espacio libre.
 
-En modalidad VirtualBox debes cuadrar dos presupuestos: el del equipo real y
-el de la VM Proxmox. Un mismo recurso no puede contarse dos veces.
+Si utilizas VirtualBox, haz dos cálculos relacionados. Primero decide cuánto puedes asignar a la VM de Proxmox sin dejar sin recursos al ordenador que la ejecuta. Después reparte esa asignación entre Proxmox, el servidor y el cliente. La memoria reservada al anfitrión queda fuera del segundo reparto.
 
 ## CPU: vCPU no significa núcleo dedicado
 
@@ -76,10 +72,7 @@ Presupuesto exterior: 16 - 8 = 8 GiB para la VM Proxmox
 Margen interior:       8 - 2 - 2 - 1 = 3 GiB
 ~~~
 
-Los 3 GiB interiores no vuelven a sumarse a los 8 GiB reservados fuera.
-Están dentro de la asignación de Proxmox y permiten absorber necesidades de
-esa capa. El cálculo demuestra coherencia aritmética, no rendimiento garantizado:
-hay que encender ambas cargas y observar también el anfitrión.
+Los 3 GiB que quedan dentro de Proxmox pertenecen a los 8 GiB que ya le has asignado. No se añaden a la reserva del anfitrión. El cálculo indica que el reparto cabe sobre el papel; para comprobar si funciona bien, enciende servidor y cliente y observa también cómo responde el equipo anfitrión.
 
 ### Caso resuelto B: propuesta que no cabe
 
@@ -105,9 +98,7 @@ con el trabajo que realmente tienes que ejecutar.
 Una plantilla preparada y apagada ocupa disco, pero no ejecuta la carga de una
 VM arrancada. Su clon de ensayo sí consume memoria y CPU al iniciarse.
 
-Por eso debes decidir cuándo pruebas ese clon y qué invitados permanecen
-activos. “Plantilla” no significa “sin coste”: el coste depende del recurso
-y del estado del objeto.
+Planifica cuándo vas a encender el clon de ensayo y qué otros invitados seguirán funcionando. La plantilla apagada necesita espacio en disco; cuando arrancas un clon, este necesita además CPU y memoria.
 
 ## Interpretar medidas sin mezclar unidades
 
@@ -151,8 +142,7 @@ No existe un ranking universal. Elabora el tuyo según la carga:
 | Red | ¿Puedo administrar y probar el servicio con una topología autorizada? |
 | Refrigeración y alimentación | ¿Se mantiene estable durante la sesión completa? |
 
-Distingue un impedimento absoluto, un límite de rendimiento y un riesgo de
-continuidad. “Es antiguo” no identifica cuál de los tres existe.
+Explica si el problema impide utilizar el montaje, lo hace más lento o puede provocar una interrupción o pérdida de datos. Decir que un equipo «es antiguo» no aclara cuál de esos problemas has observado ni qué medida necesitas tomar.
 
 ## Medición y ajuste
 

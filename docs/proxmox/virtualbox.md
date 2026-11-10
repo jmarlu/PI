@@ -17,13 +17,9 @@ free -h
 df -h
 ~~~
 
-Investiga modelo de CPU, virtualización de hardware, RAM y disco real.
-Registra restricciones de BIOS/UEFI, permisos y versión. Si VirtualBox no arranca
-una VM de 64 bits, solicita revisión; no descargues módulos, cambies Secure Boot
-o desactives protecciones del sistema por ensayo.
+Anota el modelo exacto del procesador, la memoria y el espacio libre del equipo. Comprueba la versión de VirtualBox y si tienes permiso para configurar las máquinas. Si no puedes arrancar una VM de 64 bits, consulta con el profesor qué ocurre antes de modificar BIOS/UEFI, Secure Boot o los módulos del sistema.
 
-Completa el [inventario obligatorio](../proyecto/practica.md#7-fase-1-inventario-investigado-y-viabilidad)
-con **dos niveles de presupuesto**:
+Completa el [inventario obligatorio](../proyecto/fase-1-inventario.md) calculando por separado los recursos que necesita el equipo anfitrión y los que asignarás a la VM de Proxmox. Después reparte los de Proxmox entre el propio nodo, el servidor y el cliente.
 
 - Host: LliureX, VirtualBox, navegador, editor, Git/Ansible y margen.
 - VM Proxmox: hipervisor, plantilla, `srv-aso`, `cli-linux` y margen.
@@ -70,10 +66,52 @@ VBoxManage modifyvm "pve-apellido" --nested-hw-virt on
 VBoxManage showvminfo "pve-apellido"
 ~~~
 
-Esto solicita la exposición del soporte, pero no lo crea si el equipo no lo tiene.
-Tras instalar Proxmox, comprueba extensiones visibles y arranque de una VM KVM
-de prueba. No confundas ejecutar el comando con demostrar el funcionamiento.
-[VirtualBox: virtualización anidada](https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/AdvancedTopics.html).
+Sustituye `pve-apellido` por el nombre que aparece en `VBoxManage list vms`.
+La orden se ejecuta en el **anfitrión**, con el usuario propietario de la VM.
+En Windows puedes usar `VBoxManage.exe` desde su carpeta de instalación; si
+usas PowerShell, antepón `&` a la ruta del ejecutable entre comillas.
+
+Después de instalar y arrancar Proxmox, ejecuta en la **consola de esa VM
+Proxmox**, no en el anfitrión ni en un contenedor:
+
+~~~bash
+grep -Ec '(vmx|svm)' /proc/cpuinfo
+~~~
+
+`-E` permite buscar las dos alternativas y `-c` cuenta las líneas que coinciden.
+Un resultado mayor que cero indica que Proxmox ve extensiones Intel (`vmx`)
+o AMD (`svm`). No cuenta niveles de virtualización ni garantiza por sí solo
+que KVM funcione. Si devuelve `0`, no las está viendo; cuando no encuentra
+coincidencias, `grep` también termina con código de salida 1.
+
+Conserva la salida y **prueba el arranque de una VM KVM dentro de Proxmox**.
+Activar la opción en VirtualBox solo solicita que se exponga ese soporte;
+el hardware, el anfitrión y la versión utilizada deben permitirlo.
+Consulta el [manual de virtualización anidada de VirtualBox](https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/AdvancedTopics.html).
+
+### Si la opción no aparece o la VM no arranca
+
+- **LliureX/Linux:** KVM puede estar utilizando la virtualización del procesador
+  y entrar en conflicto con VirtualBox. Oracle documenta este problema, por
+  ejemplo, con la carga de módulos KVM en Linux 6.12. Anota `uname -r`, la
+  versión de VirtualBox y el error completo; puedes consultar los módulos
+  cargados con `lsmod | grep -E '^(kvm|vbox)'`. Que aparezca un módulo no
+  demuestra por sí solo la causa. Revisa con el profesor las VM activas,
+  los módulos de VirtualBox y su compatibilidad con el kernel instalado.
+  Véanse las [notas de Oracle sobre KVM y Linux 6.12](https://docs.oracle.com/en/virtualization/virtualbox/7.1/relnotes/ChangeLog.html).
+- **Windows con Hyper-V:** VirtualBox puede utilizar el hipervisor de Windows,
+  con posibles limitaciones de rendimiento y de virtualización anidada.
+  Hyper-V, la integridad de memoria o Credential Guard pueden influir aunque
+  no hayas abierto una VM de Hyper-V. Consulta `msinfo32` y el registro
+  `VBox.log`, y revisa el caso con el profesor. El proveedor de
+  paravirtualización llamado «Hyper-V» en la configuración de una VM no
+  demuestra que el hipervisor del anfitrión esté activo. Consulta la
+  [guía de Microsoft sobre conflictos con Hyper-V](https://learn.microsoft.com/en-us/troubleshoot/windows-client/application-management/virtualization-apps-not-work-with-hyper-v)
+  y el manual de Oracle enlazado arriba.
+
+No descargues módulos del kernel ni desactives Hyper-V o protecciones del
+equipo del aula por tu cuenta. El ajuste depende del equipo y puede afectar
+a otros laboratorios; conserva el diagnóstico y acuerda la solución.
 
 **Alternativa:** si Proxmox arranca pero KVM interno no funciona, utiliza LXC
 dentro de Proxmox con validación docente. Mantienes plantilla, servidor, cliente,

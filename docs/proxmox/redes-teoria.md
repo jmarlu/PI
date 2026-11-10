@@ -7,10 +7,7 @@ actúa como un conmutador de nivel 2: une interfaces en un mismo dominio de enla
 No asigna automáticamente direcciones, no configura DNS y no hace NAT por el
 hecho de existir.
 
-`vmbr0` o `vmbr1` son nombres convencionales de bridges, no promesas de acceso
-a Internet. Un bridge puede incluir una interfaz física/virtual del nodo o
-existir sin ella para una red interna.
-[Redes en Proxmox](https://pve.proxmox.com/pve-docs/chapter-sysadmin.html).
+`vmbr0` y `vmbr1` son nombres de bridges. Para saber qué hace cada uno, consulta qué interfaces tiene conectadas y cómo está configurada su red. Puede conectar los invitados con una interfaz del nodo o servir como red interna sin salida directa. Consulta las [redes de Proxmox](https://pve.proxmox.com/pve-docs/chapter-sysadmin.html).
 
 La IP de administración del nodo se asigna según el diseño del bridge.
 Cada invitado tiene su propia IP y MAC. El bridge y la VM no comparten por
@@ -62,11 +59,7 @@ interfaz virtual de `srv-aso` → puerto del servicio.
 **Actualizaciones del invitado:** invitado → gateway `192.168.56.10` →
 reenvío/NAT del nodo → `vmbr0` → NAT de VirtualBox → red del anfitrión.
 
-La respuesta necesita completar el recorrido inverso. Si el panel funciona
-pero un invitado no descarga paquetes, ya sabes que no debes empezar
-reinstalando el navegador. Investiga la ruta, el reenvío, el NAT y la resolución
-del invitado. El [apartado oficial de masquerading](https://pve.proxmox.com/pve-docs/pve-admin-guide.html#sysadmin_network_masquerading)
-explica aspectos que dependen también del firewall utilizado.
+El tráfico de respuesta también necesita un camino de vuelta. Si puedes abrir el panel pero el invitado no descarga paquetes, la conexión con el panel ya está comprobada: revisa ahora las rutas del invitado, el reenvío, NAT y DNS. El [apartado de masquerading](https://pve.proxmox.com/pve-docs/pve-admin-guide.html#sysadmin_network_masquerading) explica las opciones que pueden depender del firewall utilizado.
 
 ## Dos conexiones, paso a paso {#ejemplo-recorridos}
 
@@ -143,10 +136,7 @@ solo-anfitrión separa el laboratorio de un bridge directo al aula, pero el
 anfitrión sigue siendo parte de esa red. No equivale a una barrera contra todo
 acceso.
 
-Las VLAN etiquetan tráfico para separar redes lógicas sobre enlaces comunes.
-Requieren coherencia entre bridge, interfaces y dispositivos conectados.
-Inventar una etiqueta en una VM no configura los switches del centro. No son
-obligatorias en este proyecto y no debes modificar la red del aula.
+Las VLAN permiten separar redes lógicas sobre conexiones compartidas. Para que funcionen, la configuración debe ser compatible en los bridges, las interfaces y los equipos de red que intervienen. Añadir una etiqueta a una VM no configura el switch del aula. No son obligatorias en este proyecto y cualquier cambio de la red del centro requiere autorización.
 
 La opción de modo promiscuo del adaptador local de VirtualBox puede ser
 necesaria para transportar las MAC de invitados internos. Se aplica solo al
@@ -154,8 +144,7 @@ adaptador de laboratorio indicado en la guía, no indiscriminadamente.
 
 ## Diagnóstico por capas
 
-Registra siempre origen, destino y protocolo. “No hay red” no es una evidencia
-suficiente.
+Cuando una conexión falle, anota desde qué equipo haces la prueba, a qué dirección y servicio intentas llegar y qué resultado obtienes. Esa información permite investigar el problema con más precisión que la frase «no hay red».
 
 1. ¿La interfaz existe y está conectada al bridge previsto?
 2. ¿IP, máscara y ausencia de duplicados son coherentes?

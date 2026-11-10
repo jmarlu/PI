@@ -2,16 +2,9 @@
 
 ## Qué se virtualiza
 
-Una VM recibe una representación de CPU, memoria, disco, firmware y red. Su
-sistema operativo ejecuta un kernel propio. En Proxmox, KVM aporta la
-virtualización acelerada de CPU y QEMU participa en el modelo de máquina y
-dispositivos.
+Una máquina virtual dispone de CPU, memoria, disco y red virtuales que utiliza como si fueran los componentes de un equipo. Dentro de ella se instala un sistema operativo con su propio kernel. En Proxmox, KVM utiliza el soporte de virtualización del procesador y QEMU proporciona el modelo de máquina y sus dispositivos.
 
-Un contenedor LXC ejecuta procesos aislados mediante capacidades del kernel
-Linux del nodo. Los espacios de nombres separan vistas de recursos y los
-cgroups permiten controlar consumos. No arranca otro kernel independiente.
-[Máquinas virtuales](https://pve.proxmox.com/pve-docs/chapter-qm.html) y
-[contenedores Proxmox](https://pve.proxmox.com/pve-docs/chapter-pct.html).
+Un contenedor LXC ejecuta sus programas utilizando el kernel de Linux del nodo Proxmox. El aislamiento permite que vea su propio entorno de procesos y recursos; los mecanismos llamados cgroups ayudan a limitar su consumo. A diferencia de una VM, el contenedor no arranca un kernel independiente. Puedes ampliar la comparación en la documentación de [máquinas virtuales](https://pve.proxmox.com/pve-docs/chapter-qm.html) y [contenedores](https://pve.proxmox.com/pve-docs/chapter-pct.html).
 
 | Necesidad | VM | Contenedor |
 |---|---|---|
@@ -27,8 +20,7 @@ depende de actualizaciones, configuración, privilegios y exposición de red.
 
 ## Ver dónde está el kernel
 
-Esquemas conceptuales de **una carga**, con dependencias hacia abajo.
-No son capturas del panel ni representan el cableado de red.
+Los diagramas muestran qué utiliza una aplicación para funcionar en cada modalidad. Sigue las flechas desde la aplicación hasta el kernel. Representan dependencias de software, no conexiones de red.
 
 **Ruta VM:**
 
@@ -80,17 +72,18 @@ En nuestro montaje:
 2. VirtualBox ejecuta la VM que contiene Proxmox.
 3. Proxmox ejecuta las VMs internas mediante KVM, **si recibe ese soporte**.
 
-Que el procesador incluya VT-x/AMD-V no basta. Intervienen firmware, sistema
-anfitrión, versión de VirtualBox y configuración de la VM externa. La opción
-de virtualización anidada permite exponer extensiones al hipervisor invitado
-cuando el entorno lo soporta.
-[VirtualBox: virtualización anidada](https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/AdvancedTopics.html)
-y [KVM anidado](https://docs.kernel.org/virt/kvm/x86/running-nested-guests.html).
+Para ejecutar una VM dentro del Proxmox instalado en VirtualBox, el soporte de virtualización debe llegar hasta ese Proxmox. Hay que comprobar que el procesador lo ofrece, que está habilitado en BIOS/UEFI y que la versión y la configuración de VirtualBox permiten exponerlo a la VM. Esa opción se denomina virtualización anidada. Consulta las referencias de [VirtualBox](https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/AdvancedTopics.html) y [KVM](https://docs.kernel.org/virt/kvm/x86/running-nested-guests.html).
 
-**Ejemplo de razonamiento:** si Proxmox arranca, pero una VM interna avisa de que
-KVM no está disponible, no concluyas que falta RAM. Separa la prueba de
-extensiones de la prueba de capacidad. Conserva el mensaje y contrasta la
-configuración de VirtualBox antes de cambiar el tipo de invitado.
+**Ejemplo:** Proxmox arranca dentro de VirtualBox, pero al iniciar una VM interna aparece un aviso de que KVM no está disponible. Guarda el mensaje y revisa el soporte y la configuración de virtualización anidada. Ese aviso no demuestra que falte RAM: la memoria disponible es otra comprobación.
+
+En el anfitrión, con la VM apagada, puedes activarla con
+`VBoxManage modifyvm "pve-apellido" --nested-hw-virt on`. Después, dentro de
+la VM Proxmox, `grep -Ec '(vmx|svm)' /proc/cpuinfo` comprueba si se ven las
+extensiones: `0` indica que no se ven y un valor positivo requiere todavía
+probar el arranque de una VM interna. La
+[guía de VirtualBox](virtualbox.md#3-comprobar-la-virtualizacion-anidada)
+explica el procedimiento y los posibles conflictos con KVM en Linux/LliureX
+o con Hyper-V en Windows.
 
 Ejecutar mediante emulación de software no equivale a haber validado KVM
 anidado y puede resultar demasiado lento para la práctica. No lo presentes
@@ -136,11 +129,7 @@ que comprobar además la disponibilidad de KVM interno y el presupuesto completo
 La CPU del equipo declara soporte de virtualización, pero KVM no está disponible
 en la VM Proxmox.
 
-**Razonamiento:** la capacidad del procesador es solo un eslabón. Se comprueba
-qué expone VirtualBox al nodo y el arranque real de una VM de ensayo. Si no
-puede validarse KVM interno, se estudia LXC para un servicio compatible.
-No es correcto presentar la captura de `lscpu` del anfitrión como demostración
-de KVM funcional dentro de Proxmox.
+**Razonamiento:** primero comprueba qué soporte de virtualización recibe Proxmox desde VirtualBox y prueba el arranque de una VM. La salida de `lscpu` del anfitrión solo describe ese anfitrión; no demuestra que KVM funcione dentro de Proxmox. Si no se consigue utilizar KVM, se puede valorar LXC para un servicio compatible.
 
 Elige por requisitos y pruebas. No asumas que activar `nesting` en un CT
 habilita VT-x/AMD-V en VirtualBox: son opciones de **capas diferentes**.

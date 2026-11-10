@@ -12,7 +12,7 @@ administrarás un servicio ASO y demostrarás que puedes automatizarlo y recuper
 la documentación inicial en Markdown.** No empieces por instalar Proxmox.
 
 1. Completa la [primera sesión: GitHub y Markdown](proyecto/primera-sesion.md).
-2. Lee la [práctica completa](proyecto/practica.md), que reúne todos los requisitos.
+2. Lee la [guía de la práctica](proyecto/practica.md) y localiza sus fases.
 3. Localiza tu clase en el [calendario de sesiones](clases/index.md).
 
 ## El laboratorio que entregarás
@@ -21,15 +21,16 @@ la documentación inicial en Markdown.** No empieces por instalar Proxmox.
 |---|---|
 | GitHub y Markdown | README, bitácora, memoria y evidencias desde la sesión 1 |
 | Inventario | Viabilidad investigada, límites y componentes críticos justificados |
-| Proxmox | Un nodo físico autorizado o una VM Proxmox en VirtualBox en tu equipo |
+| Proxmox | Una VM Proxmox en VirtualBox en tu equipo de trabajo |
 | Red y Linux | Diagrama, plantilla reutilizable, servidor y cliente VM/LXC |
 | Servicio ASO | Acceso permitido y denegado comprobados desde el cliente |
 | Automatización | Dos scripts Bash **y** un playbook Ansible ejecutados |
 | Continuidad | Backup real y restauración comprobada |
 | Validación | Rendimiento, seguridad, conclusiones y defensa individual |
 
-No necesitas un segundo ordenador dedicado. En modalidad virtualizada usas
-VirtualBox en tu equipo de trabajo, conservando el sistema anfitrión.
+El montaje habitual usa VirtualBox y conserva el sistema anfitrión.
+Instalar en un ordenador propio dedicado queda como opción autorizada;
+no necesitas disponer de uno para completar el proyecto.
 **El Proxmox del centro no es un recurso del proyecto.** Los entregables no cambian.
 
 ## Antes de usar la aplicación

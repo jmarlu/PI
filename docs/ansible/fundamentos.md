@@ -2,10 +2,7 @@
 
 ## Qué problema resuelve
 
-Configurar una máquina a mano puede resolver una necesidad inmediata, pero
-resulta difícil demostrar qué pasos se repitieron, cuáles faltan y cómo
-reconstruir el resultado. Ansible permite expresar configuración como código,
-aplicarla a destinos definidos y registrar sus resultados.
+Cuando configuras un servidor a mano, necesitas anotar los pasos para poder repetirlos en otro equipo o recuperar el sistema. Con Ansible puedes describir esa configuración en archivos de texto y aplicarla a las máquinas de tu inventario. El resultado de la ejecución permite revisar qué tareas se han realizado y cuáles han fallado.
 
 En este proyecto **Ansible y Bash son obligatorios**. El playbook debe configurar
 una parte útil del servicio en `srv-aso`. Los dos scripts aportan procedimientos
@@ -13,9 +10,7 @@ como inventario y copia. No se sustituyen entre sí.
 
 ## Estado deseado frente a secuencia de órdenes
 
-Un procedimiento imperativo describe acciones: “ejecuta este comando y después
-este otro”. Una tarea declarativa expresa una condición: “este directorio debe
-existir con este modo”.
+Puedes indicar una acción, como «ejecuta este comando», o describir el resultado que quieres, como «este directorio debe existir y tener estos permisos». La primera forma se llama **imperativa** y la segunda, **declarativa**. Muchos módulos de Ansible trabajan con la segunda: comprueban cómo está el recurso y lo ajustan a lo solicitado.
 
 Ejemplo didáctico de tarea dentro de un playbook:
 
@@ -27,20 +22,16 @@ Ejemplo didáctico de tarea dentro de un playbook:
     mode: "0700"
 ~~~
 
-La tarea compara lo existente con lo solicitado y aplica lo necesario. El nombre
-explica la intención; el módulo realiza la operación; sus argumentos definen
-el estado. El [modelo de playbooks](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_intro.html)
-describe cómo organizar estas tareas.
+En este ejemplo, `name` describe la tarea. El módulo `ansible.builtin.file` comprueba el directorio, y las opciones `path`, `state` y `mode` indican dónde debe estar, qué tipo de objeto se necesita y sus permisos. El módulo hace los cambios necesarios para cumplir esas condiciones. Consulta el [modelo de playbooks](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_intro.html) para ver cómo se agrupan las tareas.
 
 Ansible también ejecuta comandos imperativos. Usarlo no vuelve declarativo o
 idempotente cualquier comando que escribas.
 
 ## Idempotencia, convergencia y deriva
 
-**Idempotencia:** reaplicar una configuración ya satisfecha no introduce cambios
-innecesarios. **Convergencia:** aproximar el sistema al estado declarado.
-**Deriva de configuración:** diferencia entre ese estado y el real, por ejemplo
-porque alguien modificó un archivo manualmente.
+Una tarea es **idempotente** cuando, una vez conseguido el resultado, volver a ejecutarla no añade cambios innecesarios. Por ejemplo, si el directorio ya existe con los permisos previstos, no hace falta volver a crearlo.
+
+La **convergencia** consiste en llevar la configuración real al estado descrito en el playbook. Si alguien modifica a mano un archivo que Ansible administra, aparece una **deriva de configuración**: el archivo ya no coincide con lo previsto. La siguiente ejecución puede corregir esa diferencia.
 
 Ejemplo original del curso:
 
@@ -55,8 +46,7 @@ Ejemplo original del curso:
 seleccionado un host equivocado o no haber descrito una parte importante de la
 configuración. Necesitas pruebas de aceptación independientes.
 
-Tampoco debes imponer `changed_when: false` a una tarea que modifica datos
-para conseguir una captura “verde”: ocultaría información real.
+Utiliza `changed_when` para describir lo que realmente hace una tarea. Si una tarea modifica datos y le asignas `changed_when: false` solo para que el resumen no muestre cambios, estarás ocultando el resultado en lugar de comprobar la idempotencia.
 
 ## Controlador, destinos y transporte
 
@@ -99,8 +89,7 @@ y módulo. Usarlo reduce ambigüedades frente a módulos de igual nombre.
 - `skipped`: una condición o un modo evitó ejecutarla.
 - `rescued` y `ignored`: hubo tratamiento o ignorado de fallos; debes revisarlos.
 
-No sumes `ok` y `changed` como si fueran categorías excluyentes.
-Un playbook terminado necesita comprobar destinos, tareas y resultado funcional.
+Una tarea puede contarse en `ok` y también en `changed`, por lo que no debes sumar ambas cifras como si fueran grupos separados. Después de leer el resumen, comprueba que las tareas se aplicaron a los destinos previstos y prueba el servicio.
 
 ## Preguntas para explicar en clase
 

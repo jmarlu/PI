@@ -52,7 +52,22 @@ nav:
   - Inicio: index.md
   - El proyecto:
       - Primera sesión · GitHub: proyecto/primera-sesion.md
-      - Práctica completa: proyecto/practica.md
+      - Práctica por fases:
+          - Guía general: proyecto/practica.md
+          - "0. GitHub, Markdown y ficha inicial": proyecto/fase-0-inicio.md
+          - "1. Inventario y viabilidad": proyecto/fase-1-inventario.md
+          - "2. Diseño de red": proyecto/fase-2-red.md
+          - "3. Instalación de Proxmox": proyecto/fase-3-instalacion.md
+          - "4. Configuración base del nodo": proyecto/fase-4-configuracion.md
+          - "5. Plantilla Linux": proyecto/fase-5-plantilla.md
+          - "6. Servidor y cliente": proyecto/fase-6-despliegue.md
+          - "7. Servicio ASO": proyecto/fase-7-servicio.md
+          - "8. Automatización con Bash y Ansible": proyecto/fase-8-automatizacion.md
+          - "9. Copias y restauración": proyecto/fase-9-copias.md
+          - "10. Pruebas de rendimiento": proyecto/fase-10-rendimiento.md
+          - "11. Pruebas de seguridad": proyecto/fase-11-seguridad.md
+          - Memoria, entrega y defensa: proyecto/entrega.md
+      - "Comandos: teoría y uso": proyecto/comandos.md
       - Evaluación y defensa: proyecto/evaluacion.md
       - Entrega de Bash y Ansible: proyecto/automatizacion.md
   - Clases:
@@ -69,7 +84,7 @@ nav:
       - Operación, permisos y recuperación: proxmox/operacion-recuperacion.md
   - Taller de Proxmox:
       - Interfaz y operaciones: proxmox/interfaz.md
-      - Instalación física o virtualizada: proxmox/instalacion.md
+      - Instalación de Proxmox: proxmox/instalacion.md
       - Montaje en VirtualBox local: proxmox/virtualbox.md
       - Red y almacenamiento: proxmox/red-almacenamiento.md
       - Plantilla, servidor y cliente: proxmox/plantillas.md

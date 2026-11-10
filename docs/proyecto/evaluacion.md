@@ -2,8 +2,8 @@
 
 ## Qué se revisa
 
-La rúbrica operativa del proyecto está en la
-[práctica completa](practica.md#20-criterios-de-calificacion).
+La rúbrica operativa del proyecto está en el
+[apartado de criterios de calificación](entrega.md#20-criterios-de-calificacion).
 La documentación es una evidencia transversal: una captura aislada o una
 plantilla sin completar no demuestra un criterio.
 
@@ -51,7 +51,7 @@ defensas quepan en una única hora.
 
 ## Entrega formal
 
-Sigue la [lista final](practica.md#19-checklist-final) y entrega en Aules:
+Sigue la [lista final](entrega.md#19-checklist-final) y entrega en Aules:
 
 - URL de tu repositorio individual.
 - Identificador completo del commit publicado: `git rev-parse HEAD`.

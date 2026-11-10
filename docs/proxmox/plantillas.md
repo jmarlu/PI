@@ -119,4 +119,4 @@ conversión y prueba de clon.
 En `docs/05-vms-lxc.md`: ID, nombre, tipo, origen, recursos, IP, bridge,
 función y pruebas de ambas máquinas. Incluye una captura de tu nodo con ellas.
 
-Continúa con el [servicio ASO de la práctica](../proyecto/practica.md#13-fase-7-servicio-aso).
+Continúa con el [servicio ASO de la práctica](../proyecto/fase-7-servicio.md).

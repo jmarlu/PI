@@ -2,13 +2,9 @@
 
 ## De instalación a base reutilizable
 
-Instalar un sistema produce una máquina. Preparar una plantilla produce una
-base desde la que puedan nacer máquinas distintas sin heredar defectos,
-secretos o identidades incompatibles.
+Después de instalar Linux tienes un sistema que puedes utilizar. Para convertirlo en una plantilla, necesitas prepararlo como base de otros sistemas: dejar la configuración común y revisar qué datos deben cambiar en cada clon. Así evitarás distribuir contraseñas personales o crear máquinas con la misma IP.
 
-Una base útil tiene versión conocida, paquetes necesarios, acceso
-administrativo previsto y ausencia de datos personales. Debes saber qué queda
-fijado en ella y qué se configurará en cada despliegue.
+Documenta la versión de Linux, los paquetes instalados y el acceso de administración de la base. Comprueba que no contiene datos personales. Indica también qué configuración heredarán los clones y qué se asignará a cada uno al crearlo.
 
 En Proxmox una **plantilla de VM** procede de una VM preparada y convertida.
 En LXC se parte normalmente de un archivo de plantilla de contenedor.
@@ -126,9 +122,7 @@ usuario, clave pública, nombre y red, cuando la imagen está preparada para
 ello. Proxmox puede facilitar esos datos mediante su integración.
 [Cloud-init en Proxmox](https://pve.proxmox.com/pve-docs/cloud-init.html).
 
-Ansible converge la configuración descrita por el proyecto y permite
-reaplicarla durante la vida del servidor. No necesitas elegir solo uno:
-una base puede inicializarse y después ser configurada con Ansible.
+Ansible aplica la configuración descrita en el playbook y permite volver a comprobarla y corregirla durante la vida del servidor. Puede utilizarse después de cloud-init: este prepara el primer arranque y Ansible configura y mantiene el servicio.
 
 | Momento | Ejemplo de responsabilidad |
 |---|---|
@@ -144,10 +138,7 @@ y no presupongas que todas las identidades se regeneran de la misma forma.
 
 ## Versiona la base, no sus secretos
 
-Un nombre como `linux-base-v1` ayuda, pero no sustituye una ficha:
-distribución, versión, fecha, paquetes, recursos, preparación, limitaciones y
-prueba de clonación. Si corriges la base, registra por qué existe `v2` y qué
-cambió.
+Utiliza un nombre como `linux-base-v1` para reconocer la versión de la plantilla y acompáñalo de su documentación: distribución, versión, fecha, paquetes, recursos y preparación. Incluye la prueba de clonación y las limitaciones encontradas. Si creas una segunda versión, explica qué has corregido y por qué.
 
 Actualizar una plantilla no actualiza automáticamente los clones existentes.
 Cada clon tiene su ciclo de mantenimiento; Ansible permite gestionar su

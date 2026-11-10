@@ -2,9 +2,7 @@
 
 ## Estructura proporcional al proyecto
 
-Un playbook pequeño puede permanecer en un archivo. Divide cuando la separación
-permita entender, reutilizar o probar mejor una responsabilidad, no para llenar
-carpetas vacías.
+Un playbook pequeño puede guardarse en un solo archivo. Cuando crezca, separa las tareas y los recursos que resulte útil reutilizar o probar por separado. La estructura siguiente muestra algunas posibilidades; elige las que ayuden a entender tu proyecto.
 
 ~~~text
 ansible/
@@ -23,9 +21,7 @@ ansible/
       templates/configuracion.j2
 ~~~
 
-Es un ejemplo de posibilidades, **no una exigencia de tener todas las carpetas
-ni de duplicar la misma plantilla en dos lugares**. Si pasas a un rol, traslada
-allí su responsabilidad y conserva una única fuente.
+No necesitas crear todas estas carpetas ni guardar la misma plantilla en dos sitios. Si decides utilizar un rol, coloca en él las tareas, variables y archivos que correspondan a esa función y elimina las duplicaciones.
 
 Un rol agrupa tareas y recursos bajo una estructura reconocible. `defaults`
 ofrece valores fáciles de sustituir; `vars` tiene otra prioridad y no debe
@@ -90,11 +86,7 @@ versión no lo elimina del historial ni de copias ya realizadas.
 
 ## Limitaciones del modo check
 
-Check mode no es una VM desechable ni una transacción. Hay módulos sin soporte
-completo; resultados registrados pueden diferir o faltar; y una tarea que
-necesita un archivo creado anteriormente puede no encontrarlo porque esa
-creación solo fue simulada.
-[Check y diff](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_checkmode.html).
+El modo `--check` intenta anticipar qué cambiaría, pero su alcance depende de los módulos. Algunos no lo admiten por completo, y una tarea puede necesitar un archivo que una tarea anterior solo habría creado en una ejecución real. Por eso los resultados registrados pueden faltar o ser distintos. Consulta las limitaciones de [check y diff](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_checkmode.html).
 
 Una tarea marcada `check_mode: false` puede ejecutarse realmente durante
 `--check`. Revisa el código antes de confiar en ese indicador como garantía
@@ -125,10 +117,7 @@ previas puede invalidarlos. Anota exactamente qué selección utilizaste.
 
 ## Evidencias que permiten reproducir
 
-En `docs/07-automatizacion.md` enlaza código y commit, versiones, inventario
-anonimizado cuando corresponda, órdenes ejecutadas, resumen de dos ejecuciones,
-prueba funcional, cambios repetidos y límites. Una captura sin comando ni
-destino no permite explicar qué se hizo.
+En `docs/07-automatizacion.md`, enlaza el código y el commit utilizados. Anota las versiones, las máquinas seleccionadas y los comandos ejecutados, retirando los datos privados. Compara el resumen de la primera ejecución con el de la segunda y explica los cambios que se repitan. Completa el registro con la prueba del servicio y con lo que el playbook todavía no configura.
 
 Continúa con el [laboratorio guiado](laboratorio.md) y la
 [integración obligatoria con Bash y el servicio](../proyecto/automatizacion.md).

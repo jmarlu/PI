@@ -38,9 +38,7 @@ que esa comprobación no verifica la conectividad ni el efecto de las tareas.
 | Facts | Distribución o arquitectura del destino | Información descubierta del sistema |
 | `register` | Resultado de leer un archivo | Salida de una tarea de esta ejecución |
 
-No presentes una variable que has escrito tú como si fuese una medición real.
-El laboratorio local renderiza un diseño de Proxmox; **no consulta la API ni
-comprueba la RAM de un nodo real**.
+Distingue los valores que eliges de los que has medido. En el laboratorio local, tú escribes la RAM prevista en `variables.yml` y Ansible la utiliza para generar un informe del diseño. El ejercicio no consulta la API ni mide la RAM de un nodo real.
 
 `gather_facts: true` recoge información mediante el mecanismo de facts.
 Puedes acceder a `ansible_facts['os_family']`, si ese dato se ha recogido.
@@ -56,11 +54,7 @@ YAML, entrecomilla el valor completo:
 path: "{{ playbook_dir }}/salida"
 ~~~
 
-En condiciones `when:` y expresiones de `assert:` se escribe la expresión,
-no otra plantilla rodeada por llaves. Conserva los tipos: comparar el número
-`2048` con el texto `"2048"` no es un diseño claro. Convierte de forma
-explícita solo cuando conoces y validas el dato de entrada.
-[Variables y precedencia](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_variables.html).
+En `when:` y en las condiciones de `assert:` se escribe directamente la expresión, sin envolverla de nuevo en `{{ ... }}`. Revisa también el tipo de cada dato: `2048` es un número y `"2048"` es texto. Si necesitas convertirlo, hazlo de forma explícita después de comprobar la entrada. Consulta las [variables y su precedencia](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_variables.html).
 
 ## Jinja separa configuración y valores
 
@@ -77,14 +71,9 @@ Memoria asignada al nodo: {{ nodo.ram_mib }} MiB
 {% endfor %}
 ~~~
 
-El módulo `template` renderiza en el controlador y entrega el resultado al
-destino indicado. El archivo `.j2` es la fuente versionada; el resultado es un
-producto derivado que Ansible puede regenerar.
-[Módulo template](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/template_module.html).
+El módulo `template` combina la plantilla con los valores de las variables en el controlador y envía el archivo resultante al destino. Guarda la plantilla `.j2` en Git: es el archivo que editas para definir el contenido. El archivo generado se puede volver a crear a partir de ella y de las variables. Consulta el [módulo template](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/template_module.html).
 
-Evita insertar hora actual o valores aleatorios sin necesidad: harían cambiar
-el archivo en cada ejecución. Para una evidencia temporal puedes registrar
-la fecha por separado, sin introducir deriva artificial en la configuración.
+Si incluyes la hora actual o un número aleatorio en la plantilla, el archivo puede cambiar cada vez que ejecutes el playbook aunque la configuración sea la misma. Añádelos solo cuando sean necesarios. Para documentar cuándo hiciste una prueba, puedes registrar la fecha aparte.
 
 ## Validar antes de configurar
 

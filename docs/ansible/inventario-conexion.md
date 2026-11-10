@@ -2,9 +2,7 @@
 
 ## Dos inventarios con propósitos distintos
 
-El inventario de hardware demuestra viabilidad. El de Ansible identifica
-destinos y agrupa máquinas para aplicar configuración. No sustituye a la
-investigación de CPU, RAM y disco.
+En el proyecto utilizamos la palabra inventario con dos sentidos. El inventario de hardware recoge las características del equipo y ayuda a justificar si permite realizar el laboratorio. El inventario de Ansible indica a qué máquinas se conectará la herramienta y cómo se agrupan. Este segundo archivo no sustituye a la investigación de CPU, RAM y disco.
 
 Ejemplo `inventory.ini`, que debes adaptar antes de ejecutar:
 
@@ -35,9 +33,7 @@ ansible-playbook -i inventory.ini playbook.yml --list-hosts
 ansible-playbook -i inventory.ini playbook.yml --list-tasks
 ~~~
 
-El grafo demuestra cómo se interpretan los grupos, no que haya conexión.
-`--list-hosts` permite revisar los destinos del play. Si aparece un equipo que
-no administras o ningún host coincide, corrige antes de continuar.
+La salida de `--graph` muestra las máquinas y los grupos que Ansible ha leído del inventario. La opción `--list-hosts` permite comprobar cuáles seleccionará el playbook. Ninguna de las dos prueba todavía la conexión. Si aparece una máquina ajena o no se selecciona el servidor esperado, corrige el inventario antes de ejecutar tareas.
 
 `--limit srv-aso` restringe los destinos ya seleccionados; no añade al play un
 host que su patrón `hosts:` no incluyó. En el proyecto se actúa solo sobre los
@@ -115,10 +111,7 @@ general “lo último escrito gana”.
 
 ## Caso de diagnóstico
 
-SSH manual funciona, pero Ansible informa `unreachable`. Compara IP, usuario,
-puerto, clave y controlador utilizados en ambas pruebas. Si llega al destino
-y el error menciona sudo o Python, cambia la hipótesis: ya no estás ante la
-misma fase de conexión.
+Si puedes entrar por SSH pero Ansible devuelve `unreachable`, compara los datos de ambas conexiones: IP, puerto, usuario, clave y equipo desde el que se ejecutan. Si el mensaje indica que se ha conectado pero ha fallado sudo o Python, revisa ese requisito concreto en lugar de seguir cambiando la red.
 
 Documenta las comprobaciones en `docs/07-automatizacion.md`, sin claves ni
 contraseñas. Continúa con [variables y plantillas](variables-plantillas.md).

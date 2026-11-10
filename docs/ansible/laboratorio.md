@@ -2,13 +2,9 @@
 
 ## Alcance
 
-Este ejercicio trabaja **solo en el controlador Linux**, con conexión local,
-sin sudo, sin servicios y sin conexión a Proxmox. Genera un informe Markdown a
-partir de variables que describen un diseño de nodo e invitados.
+En este ejercicio ejecutarás Ansible **solo en tu equipo Linux**, con conexión local y sin sudo. El playbook leerá unas variables con un diseño de laboratorio y generará un informe Markdown en una carpeta de salida. No se conectará a Proxmox ni instalará un servicio.
 
-No instala VMs, no mide hardware y no cumple por sí solo la automatización
-remota del servicio ASO. Su finalidad es que observes variables, plantillas,
-validaciones, notificaciones e idempotencia antes de actuar sobre `srv-aso`.
+El objetivo es aprender cómo se utilizan variables, plantillas y comprobaciones, y observar qué ocurre al repetir una ejecución o cambiar un archivo. Los datos del informe son los que tú escribes en las variables; no son mediciones del equipo. Más adelante tendrás que aplicar Ansible al servicio de `srv-aso`, porque este ensayo local no cumple por sí solo esa entrega remota.
 
 ## 1. Preparar Ansible
 
@@ -92,9 +88,7 @@ Edita `variables.yml` y cambia `fase: inventario` por `fase: despliegue`.
 Guarda y repite el playbook. El informe debe cambiar y la siguiente ejecución
 volver a `changed=0`.
 
-Explica por qué esta modificación es legítima y no un defecto de idempotencia.
-En Git versionarías la variable o la plantilla que expresa la decisión, no
-necesariamente el resultado regenerable.
+Esta vez el informe debe cambiar porque has pedido otra fase en las variables. Eso es compatible con la idempotencia: después de aplicar el nuevo valor, repetir la ejecución debería mantenerlo sin más cambios. Para poder reproducirlo, guarda en Git las variables y la plantilla que has utilizado.
 
 ## 6. Reparar una desviación
 
@@ -114,9 +108,7 @@ Modifica temporalmente `reserva_nodo_mib` a `999999` en `variables.yml`.
 La suma ya no cabe en el nodo declarado. El playbook debe fallar con un mensaje
 de presupuesto antes de renderizar un nuevo informe.
 
-Devuelve la reserva a su valor válido y comprueba que vuelve a funcionar.
-Un error esperado y explicado es una evidencia positiva de validación, no una
-captura que haya que ocultar.
+Devuelve la reserva a su valor válido y ejecuta de nuevo el playbook. Explica que el fallo anterior era el resultado esperado: la comprobación ha impedido generar un informe con un reparto de memoria imposible.
 
 ## Registro de resultados
 
@@ -134,10 +126,7 @@ No copies esta tabla como si ya hubieses ejecutado las pruebas.
 
 ## Trasladarlo al servicio ASO
 
-En el proyecto el inventario pasa de localhost al servidor propio y las tareas
-deben describir configuración útil del servicio aprobado. Conserva el mismo
-método: alcance explícito, parámetros, validación, cambios justificables y prueba
-desde el cliente.
+Para aplicar lo aprendido al servicio ASO, cambia el inventario local por el de tu servidor y escribe tareas que configuren una parte útil del servicio aprobado. Antes de ejecutarlas, revisa la máquina seleccionada, los parámetros y los permisos. Después, repite la ejecución, explica los cambios y prueba el servicio desde el cliente.
 
 Consulta los [requisitos de Bash y Ansible](../proyecto/automatizacion.md).
 Los roles son una posibilidad de organización, no un requisito nuevo impuesto

@@ -1,7 +1,7 @@
 # Entrega de automatización: Bash y Ansible
 
 Esta página reúne las comprobaciones de entrega, no un tema de administración
-Linux. La [fase 8 de la práctica](practica.md#14-fase-8-automatizacion) conserva
+Linux. La [fase 8 de la práctica](fase-8-automatizacion.md) conserva
 los requisitos: **dos scripts Bash y un playbook Ansible**, ejecutados y explicados.
 
 ## Dos scripts propios adaptados
@@ -90,5 +90,5 @@ sin añadir otra memoria paralela.
 
 Las copias binarias, discos virtuales, claves y contraseñas no se suben.
 La recuperación se demuestra en la
-[fase de copias y restauración](practica.md#15-fase-9-copias-y-restauracion).
+[fase de copias y restauración](fase-9-copias.md).
 

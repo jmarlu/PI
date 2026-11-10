@@ -2,9 +2,7 @@
 
 ## Una plataforma, varias piezas
 
-Proxmox VE integra virtualización, almacenamiento, red, permisos y tareas de
-administración. No es solamente la página que se abre en el puerto 8006.
-Distinguir sus componentes permite acotar una avería sin reinstalar el nodo.
+Proxmox VE permite crear y administrar máquinas virtuales y contenedores. Para hacerlo utiliza varios componentes: el sistema base, los servicios de administración, el almacenamiento y la red. El panel web es la herramienta desde la que accedes a ellos. Conocer su función te ayudará a decidir qué revisar cuando algo falle.
 
 | Componente | Responsabilidad | Ejemplo de fallo observable |
 |---|---|---|
@@ -28,7 +26,7 @@ El **plano de gestión** permite crear, iniciar, detener, copiar o restaurar
 invitados. La **carga de trabajo** es lo que hacen esos invitados: en este
 proyecto, un servicio ASO y sus pruebas desde un cliente.
 
-Esta separación ayuda a razonar:
+La administración del nodo y el trabajo de los invitados pueden fallar de forma distinta. Estos ejemplos ayudan a localizar el problema:
 
 - Si el navegador pierde acceso al panel, los invitados podrían seguir funcionando.
 - Si `srv-aso` se detiene, el panel puede continuar disponible.
@@ -41,10 +39,7 @@ al servicio no demuestra que existan copias recuperables.
 
 ## Objetos que administra el nodo
 
-`Datacenter` aparece en la interfaz incluso con un solo nodo: es un ámbito de
-configuración, no una prueba de que tengas un clúster. Debajo están el nodo,
-sus invitados y sus recursos. Un VMID/CTID identifica un invitado; no es su
-dirección IP, su nombre de equipo ni un usuario.
+En el panel aparece `Datacenter` incluso cuando solo tienes un nodo. Es el lugar desde el que se organizan ciertas opciones generales; su presencia no significa que hayas creado un clúster. Debajo encontrarás el nodo y sus invitados. Cada VM o contenedor tiene un número identificador, llamado VMID o CTID, que es distinto de su IP y de su nombre dentro de Linux.
 
 Cada invitado reúne varias cosas: configuración, uno o más volúmenes,
 interfaces virtuales, opciones de arranque y estado de ejecución. Una ISO de
@@ -128,9 +123,7 @@ disco y firmware de ese invitado. Si se cumplen los dos primeros, pero falla
 el tercero, revisa red y servicio. Repetir **Start** no aporta información
 cuando el invitado ya está ejecutándose.
 
-Un estado `running` indica que existe una instancia en ejecución; no es un
-certificado de salud de su aplicación. Por la misma razón, una tarea `OK` de
-creación acredita esa tarea concreta, no todo el proyecto.
+El estado `running` indica que el invitado está en ejecución. Después debes comprobar que su sistema ha arrancado y que el servicio responde. De forma parecida, una tarea de creación con resultado `OK` confirma que esa operación terminó, pero no comprueba el resto del proyecto.
 
 ## Ciclo de vida y operaciones
 
@@ -139,10 +132,7 @@ gestiona el objeto que lo contiene. **Shutdown** solicita un apagado ordenado;
 **Stop** es una parada brusca y puede perder escrituras pendientes. No son
 equivalentes aunque ambos terminen con la máquina detenida.
 
-El QEMU Guest Agent es software del interior de una VM que permite operaciones
-coordinadas con Proxmox. Instalarlo y habilitar su uso son pasos diferentes;
-no convierte cualquier aplicación en consistente por arte de magia.
-[Operaciones y agente QEMU](https://pve.proxmox.com/pve-docs/chapter-qm.html).
+QEMU Guest Agent se instala dentro de una VM para permitir operaciones coordinadas con Proxmox. Además de instalarlo, hay que habilitar su uso en la configuración correspondiente. Algunas aplicaciones necesitan sus propios pasos de preparación para obtener una copia consistente. Consulta las [operaciones y el agente QEMU](https://pve.proxmox.com/pve-docs/chapter-qm.html).
 
 Después de una operación, revisa el registro de tarea completo: objeto destino,
 hora, mensajes y estado final. Una notificación de inicio no demuestra éxito.
@@ -160,7 +150,8 @@ incapaz de ejecutar la VM de Proxmox**. Primero debe arrancar el nodo; después
 se comprueba si dispone de KVM interno o se aprueba el uso de contenedores.
 
 No se incorpora un nodo del centro como alternativa. El proyecto sigue siendo
-un nodo individual propio, físico autorizado o virtualizado localmente.
+un nodo individual en VirtualBox; la instalación en equipo propio dedicado
+es opcional y requiere autorización.
 
 ## Razona y comprueba
 

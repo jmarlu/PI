@@ -24,8 +24,8 @@ sesion forma parte de las 100 horas previstas; no anade horas al curso.
 Utiliza tu cuenta individual de GitHub y un equipo de aula con navegador,
 Git y editor de texto. Comprueba `git --version`. Si falta Git, utiliza
 la instalacion facilitada por el profesor. La documentacion puede
-prepararse desde el equipo de aula en cualquiera de las dos modalidades
-de Proxmox.
+prepararse desde el equipo de aula para el montaje en VirtualBox o para
+la instalación opcional autorizada de Proxmox.
 
 Configura con el profesor la autenticacion Git por HTTPS mediante un
 gestor de credenciales o token, o por SSH mediante una clave. La
@@ -69,8 +69,8 @@ Completa con el editor:
 
 | Archivo | Contenido que debe quedar hoy |
 |---|---|
-| `README.md` | Identificador, objetivo, modalidad o decision pendiente, estado e indice con enlaces |
-| `docs/00-ficha-inicial.md` | URL de GitHub, modalidad prevista, recursos conocidos y dudas |
+| `README.md` | Identificador, objetivo, montaje en VirtualBox u opción autorizada, estado e indice con enlaces |
+| `docs/00-ficha-inicial.md` | URL de GitHub, montaje previsto, recursos conocidos y dudas |
 | `docs/00-bitacora.md` | Primera entrada con fecha, objetivo, acciones, pruebas, decisiones, incidencias y siguiente paso concreto |
 | `docs/10-memoria-tecnica.md` | Titulo, resumen inicial, necesidad, objetivos comprobables, alcance e indice enlazado |
 | `.gitignore` | Exclusiones de credenciales, ficheros locales, ISOs, discos y backups |

@@ -43,7 +43,7 @@ La bitácora debe mostrar el proceso, no una lista de intentos sin explicación.
 | Presupuesto rechazado en el laboratorio local | Variables y suma de RAM | Corregir los datos, no eliminar la aserción |
 
 Para incidencias del servicio, utiliza el procedimiento de ASO aprobado y
-registra las pruebas en la [práctica](../proyecto/practica.md#13-fase-7-servicio-aso).
+registra las pruebas en la [práctica](../proyecto/fase-7-servicio.md).
 Para copias, revisa [alcance y recuperación](../proxmox/operacion-recuperacion.md).
 
 Si el bloqueo depende del centro, entrega una incidencia verificable y una

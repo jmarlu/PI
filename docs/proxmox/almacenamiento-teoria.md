@@ -2,9 +2,7 @@
 
 ## Un storage no es lo mismo que un disco
 
-Proxmox usa un identificador de almacenamiento para referirse a un backend y
-a los contenidos que admite. El nombre `local` no significa “todo el disco”
-y `local-lvm` no es una carpeta donde copiar ISO.
+En el panel, cada almacenamiento tiene un nombre y una configuración. Esa configuración indica dónde se guardan los datos, qué tecnología se utiliza —por ejemplo, un directorio o LVM-thin— y qué contenidos se admiten. Por eso `local` no significa necesariamente «todo el disco», y `local-lvm` no es una carpeta en la que se pueda copiar cualquier ISO.
 
 En una instalación típica con ext4/LVM, `local` usa un directorio y
 `local-lvm` un pool LVM-thin para discos de invitados. Otra instalación puede
@@ -19,9 +17,7 @@ copiar una captura como inventario.
 | Disco de VM / rootfs de CT | Mantener sistema y datos del invitado | Archivo de backup |
 | Backup | Recuperar un invitado dentro de su alcance | Snapshot local |
 
-Seleccionar un storage depende tanto del espacio disponible como del tipo de
-contenido permitido. Una ISO no aparece como destino válido en un backend que
-solo admite volúmenes de invitados.
+Antes de elegir dónde guardar algo, comprueba dos cosas: que ese almacenamiento admita el tipo de contenido y que tenga espacio. Por ejemplo, un almacenamiento configurado solo para discos de invitados no aparecerá como destino para subir una ISO.
 
 ## Directorio, LVM-thin y ZFS
 
@@ -54,7 +50,7 @@ de ese disco puede haber un volumen LVM-thin que actúe como disco de
 No todos los backends ofrecen los mismos formatos ni las mismas capacidades
 de snapshot/clonación. No deduzcas soporte solamente de la extensión.
 
-Ejemplo original de dependencias, de soporte exterior a datos interiores:
+En el siguiente ejemplo, sigue el recorrido desde el disco físico hasta el archivo guardado dentro del servidor:
 
 ~~~mermaid
 flowchart TD
@@ -66,7 +62,7 @@ flowchart TD
 ~~~
 
 Cada nivel utiliza almacenamiento del anterior; las cajas **no** son seis
-dispositivos independientes. En modalidad física se elimina el archivo VDI
+dispositivos independientes. En la instalación física opcional se elimina el archivo VDI
 exterior, pero sigue habiendo dependencias entre disco, pool, volúmenes y datos.
 
 Mover un documento dentro del invitado no cambia esa cadena de dependencias.
@@ -117,8 +113,7 @@ que todo archivo de 8 GiB aumenta exactamente 8 GiB en cada capa.
 panel muestre dos entradas, podrían estar sobre particiones o volúmenes del
 mismo dispositivo.
 
-**Capacidad:** estudias cómo se reparte realmente ese dispositivo.
-**Continuidad:** un fallo físico suyo puede hacer perder ambas entradas.
+Para calcular el espacio, averigua cómo se reparte el dispositivo físico entre esas entradas. Para valorar las copias, recuerda que una avería de ese dispositivo puede hacer que se pierdan ambas.
 
 No sumes capacidad total y espacio libre, ni sumes dos vistas de un mismo pool.
 Registra por separado “dispositivo”, “backend”, “contenido” y “capacidad
@@ -142,9 +137,7 @@ ejecutarla sin conocer el layout podría dañar el sistema.
 | Disco de `srv-aso` | Backend que admita discos de VM y cumpla el diseño |
 | Backup del invitado | Destino con contenido de backup habilitado, capacidad, permisos y riesgo físico identificado |
 
-“Es local” no responde ninguna de esas tres decisiones. Si el asistente no
-ofrece un storage, revisa el tipo de contenido y su disponibilidad antes de
-pensar que se ha borrado.
+Indicar solo que un archivo se guarda «en local» no permite saber si ese destino es adecuado. Identifica el almacenamiento, sus contenidos permitidos y el disco físico que lo sostiene. Si no aparece en el asistente, comprueba su configuración y disponibilidad antes de suponer que se ha borrado.
 
 ## Qué vigilar antes de copiar o clonar
 

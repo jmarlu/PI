@@ -1,8 +1,13 @@
-# Instalación física o virtualizada
+# Instalación de Proxmox
 
 **Sesiones 7-12.** Antes necesitas H0 (GitHub), inventario y diseño aprobados.
 El enunciado y las tres preguntas del inventario están en la
-[práctica](../proyecto/practica.md).
+[guía de la práctica](../proyecto/practica.md) y en la
+[fase de inventario](../proyecto/fase-1-inventario.md).
+
+El montaje de clase utiliza **VirtualBox en el equipo del alumno**.
+La instalación directa en un ordenador propio dedicado queda como opción
+con autorización del profesor; no se dispone de un equipo adicional por alumno.
 
 ## Preparación común
 
@@ -14,32 +19,13 @@ El enunciado y las tres preguntas del inventario están en la
 - Conserva fuera del equipo cualquier dato que deba mantenerse.
 - No publiques contraseñas de instalación ni capturas que las incluyan.
 
-Los 8 GB físicos o 6-8 GB virtuales de la práctica son orientaciones para
+Los 6-8 GB asignados a la VM son una orientación para
 este laboratorio, **no el mínimo oficial universal**. Debes reservar memoria
 para Proxmox, invitados y margen. El uso de ZFS u otros servicios modifica
 las necesidades. En un puesto de 16 GB no asignes los 16 GB a Proxmox:
 el sistema anfitrión, VirtualBox, navegador, editor y Ansible también consumen RAM.
 
-## Modalidad A: equipo físico autorizado
-
-1. Descarga la ISO desde [Proxmox Downloads](https://www.proxmox.com/en/downloads).
-   Contrasta su SHA-256 con el publicado para ese archivo:
-   `sha256sum NOMBRE_REAL_DE_LA_ISO.iso`.
-2. Prepara el USB mediante la herramienta aprobada, confirmando el dispositivo.
-   La escritura borra el USB. No uses un comando de disco copiado sin identificarlo.
-3. Arranca desde el USB. Revisa el firmware y la virtualización con el profesor.
-4. En el instalador, selecciona **solo el disco autorizado**. Revisa capacidad
-   y modelo, no únicamente su orden.
-5. Escoge almacenamiento conforme al diseño. En un disco pequeño, evita
-   añadir complejidad de ZFS sin haber presupuestado sus recursos.
-6. Configura país, zona horaria, credenciales y datos de red asignados.
-7. Revisa el resumen, instala y retira el medio de instalación al reiniciar.
-8. Accede a la URL mostrada desde el equipo de administración.
-9. Comprueba versión, red, espacio y log de tareas.
-
-Documenta las decisiones del instalador, no solo su pantalla final.
-
-## Modalidad B: Proxmox en VirtualBox en tu equipo
+## Montaje de clase: Proxmox en VirtualBox {#modalidad-b-proxmox-en-virtualbox-en-tu-equipo}
 
 **No se utiliza el Proxmox del centro.** Conservas el sistema anfitrión del
 equipo del alumno y ejecutas Proxmox en una VM de VirtualBox local.
@@ -61,13 +47,35 @@ Si la VM Proxmox funciona pero KVM no está disponible dentro, valida LXC
 con el profesor. Si VirtualBox no puede arrancar la propia VM, LXC no evita
 ese requisito: registra el bloqueo y revisa la viabilidad del equipo.
 
+## Opcional: instalación en equipo propio dedicado {#modalidad-a-equipo-fisico-autorizado}
+
+Sigue esta ruta solo si dispones de un equipo propio dedicado, el profesor
+ha aprobado la propuesta y tienes permiso para borrar su disco.
+
+1. Descarga la ISO desde [Proxmox Downloads](https://www.proxmox.com/en/downloads).
+   Contrasta su SHA-256 con el publicado para ese archivo:
+   `sha256sum NOMBRE_REAL_DE_LA_ISO.iso`.
+2. Prepara el USB mediante la herramienta aprobada, confirmando el dispositivo.
+   La escritura borra el USB. No uses un comando de disco copiado sin identificarlo.
+3. Arranca desde el USB. Revisa el firmware y la virtualización con el profesor.
+4. En el instalador, selecciona **solo el disco autorizado**. Revisa capacidad
+   y modelo, no únicamente su orden.
+5. Escoge almacenamiento conforme al diseño. En un disco pequeño, evita
+   añadir complejidad de ZFS sin haber presupuestado sus recursos.
+6. Configura país, zona horaria, credenciales y datos de red asignados.
+7. Revisa el resumen, instala y retira el medio de instalación al reiniciar.
+8. Accede a la URL mostrada desde el equipo de administración.
+9. Comprueba versión, red, espacio y log de tareas.
+
+Documenta las decisiones del instalador, no solo su pantalla final.
+
 ## Entender lo que el instalador está cambiando
 
 El instalador modifica el **disco que le presenta su entorno**. En la ruta
 física puede ser el dispositivo real del ordenador autorizado; en la ruta
 VirtualBox normal de este curso debe ser el disco virtual VDI seleccionado.
 
-| Comprobación | Ruta física | Ruta VirtualBox |
+| Comprobación | Ruta física opcional | Ruta VirtualBox de clase |
 |---|---|---|
 | ¿Qué sistema está arrancando? | Instalador desde USB en equipo dedicado | Instalador dentro de la ventana de la VM |
 | ¿Qué se puede borrar? | El disco físico seleccionado | El contenido del VDI presentado a esa VM |

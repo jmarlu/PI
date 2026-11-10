@@ -17,7 +17,18 @@ Requisitos: Python 3.10 o posterior, soporte venv, Bash y acceso a Internet
 para instalar dependencias. En LliureX, solicita al administrador el paquete
 python3-venv si falta.
 
-Desde esta carpeta:
+Estos comandos se ejecutan **dentro de `web_alumnado`**, donde están
+`requirements.txt`, `mkdocs.yml`, `tools/` y `tests/`. Si tu terminal está
+en la raíz `PI`, entra primero:
+
+~~~bash
+cd web_alumnado
+~~~
+
+Si has clonado únicamente el repositorio de la web, entra en la carpeta
+de ese repositorio. Activar un entorno virtual no cambia la carpeta actual.
+
+Prepara el entorno una vez; si `.venv` ya existe, omite la primera orden:
 
 ~~~bash
 python3 -m venv .venv
@@ -26,11 +37,19 @@ python3 -m venv .venv
 .venv/bin/python -m unittest discover -s tests -v
 .venv/bin/python -m mkdocs build --strict
 .venv/bin/python tools/comprobar_enlaces.py site
+~~~
+
+Para arrancar la web en las siguientes sesiones, desde esta misma carpeta:
+
+~~~bash
 .venv/bin/python -m mkdocs serve --dev-addr 127.0.0.1:8765
 ~~~
 
 Abrir http://127.0.0.1:8765/. Usa otro puerto si está ocupado.
 La previsualización local no es una publicación en GitHub.
+
+En la copia completa del proyecto, el README de la raíz `PI` incluye
+también el comando para arrancar esta web sin cambiar de carpeta.
 
 ## Publicación en GitHub Pages
 
@@ -72,7 +91,9 @@ del alumno es distinto y puede ser privado con acceso docente.
 ## Mantenimiento
 
 - Editar `docs/`: contenido público del curso.
-- `docs/proyecto/practica.md`: enunciado único y rúbrica de referencia.
+- `docs/proyecto/practica.md`: guía general y recorrido de la práctica.
+- `docs/proyecto/fase-*.md`: tareas y evidencias de cada fase (0-11).
+- `docs/proyecto/entrega.md`: memoria, revisión final, rúbrica y defensa.
 - `docs/clases/`: presentación y calendario de las 33 sesiones, con enlaces
   directos a la práctica y los temas.
 - `docs/proxmox/`: teoría ampliada y procedimientos del taller.
