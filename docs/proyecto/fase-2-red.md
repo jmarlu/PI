@@ -35,6 +35,11 @@ Este esquema resume el recorrido en VirtualBox. Adáptalo a las interfaces
 y direcciones de tu diseño. Tienes un ejemplo completo en la
 [guía de red local](../proxmox/virtualbox.md#red-local).
 
+La referencia común es **Red NAT `NatNetwork`**, `vmbr0` con
+`10.0.2.15/24` y gateway `10.0.2.1`, y `vmbr1` con `192.168.56.10/24`
+para gestión e invitados. DNS: `10.0.2.3`. En los invitados, usa `vmbr1`
+y gateway `192.168.56.10`; la red solo-anfitrión no proporciona Internet sola.
+
 ```mermaid
 flowchart TD
   HOST["Anfitrión · navegador y SSH"] --> SOLO["Red solo-anfitrión"]
@@ -43,8 +48,8 @@ flowchart TD
   BR --> CLI["cli-linux · cliente de pruebas"]
   CLI -->|"Pruebas autorizadas"| SRV
   BR --> PVE["Nodo Proxmox · reenvío y NAT"]
-  PVE --> WAN["vmbr0 · adaptador NAT"]
-  WAN --> NAT["NAT de VirtualBox · salida autorizada"]
+  PVE --> WAN["vmbr0 · adaptador Red NAT"]
+  WAN --> NAT["NatNetwork · gateway 10.0.2.1"]
 ```
 
 ## Qué guardar en tu repositorio

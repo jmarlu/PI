@@ -40,7 +40,10 @@ ip route
 ```
 
 Compara IP, máscara y gateway con tu diagrama. En VirtualBox, relaciona
-cada interfaz con su adaptador NAT o solo-anfitrión. Abre el panel desde
+cada interfaz con su adaptador Red NAT `NatNetwork` o solo-anfitrión.
+Comprueba `vmbr0` de salida (`10.0.2.15/24`, gateway `10.0.2.1`) y
+`vmbr1` de gestión e invitados (`192.168.56.10/24`, sin otro gateway).
+El DNS de referencia es `10.0.2.3`. Abre el panel desde
 el anfitrión y comprueba que el nodo resuelve nombres y accede al
 repositorio de paquetes autorizado. Si necesitas ajustar el montaje,
 consulta el [taller de red y almacenamiento](../proxmox/red-almacenamiento.md)

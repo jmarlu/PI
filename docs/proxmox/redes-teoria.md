@@ -36,12 +36,16 @@ a aprobación y ausencia de conflictos con otras redes del equipo:
 
 | Capa | Red o dirección de ejemplo | Papel |
 |---|---|---|
-| VirtualBox, adaptador 1 | NAT | Salida de la VM Proxmox |
-| Nodo, `vmbr0` | `10.0.2.15/24` | Red exterior del nodo, gateway `10.0.2.2` |
+| VirtualBox, adaptador 1 | Red NAT `NatNetwork`, `10.0.2.0/24` | Salida de la VM Proxmox |
+| Nodo, `vmbr0` | `10.0.2.15/24` | Red exterior del nodo, gateway `10.0.2.1` |
 | VirtualBox, adaptador 2 | Solo-anfitrión | Acceso privado desde el equipo del alumno |
 | Equipo anfitrión | `192.168.56.1/24` | Administración local |
 | Nodo, `vmbr1` | `192.168.56.10/24` | Administración y gateway de los invitados |
 | `srv-aso` y `cli-linux` | `192.168.56.20` y `192.168.56.30` | Cargas del proyecto |
+
+Las tarjetas del nodo (`nic0`/`nic1`, o sus nombres reales) se incorporan a
+`vmbr0`/`vmbr1` sin IP propia. Solo `vmbr0` tiene gateway; los invitados se
+conectan a `vmbr1`, usan gateway `192.168.56.10` y DNS `10.0.2.3`.
 
 Aquí hay **dos NAT para salir a Internet**: el configurado en el nodo para
 los invitados y el NAT exterior de VirtualBox. En cambio, el navegador del

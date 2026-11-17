@@ -51,7 +51,7 @@ En VirtualBox, pulsa *Nueva* y prepara una instalación manual:
 | CPU | 2 vCPU; ampliar solo con justificación |
 | Disco | VDI, 80 GiB orientativos, en una carpeta con espacio real suficiente |
 | ISO | Proxmox VE de la versión autorizada, con SHA-256 contrastado |
-| Adaptador 1 | NAT, cable conectado |
+| Adaptador 1 | Red NAT `NatNetwork`, cable conectado |
 | Adaptador 2 | Solo-anfitrión, conectado a la red local creada en el paso siguiente |
 
 Un VDI dinámico crece al usarse: vigila **tanto `df -h` del host como el storage
@@ -128,8 +128,14 @@ no resuelve el problema del anfitrión.
 
 ## 4. Red local {#red-local}
 
-El diseño propuesto usa **NAT para salida y solo-anfitrión para gestión y servicio**,
+El diseño de referencia usa **Red NAT `NatNetwork` para salida y solo-anfitrión para gestión y servicio**,
 sin conectar por bridge el laboratorio a la red física del aula.
+
+En el administrador de redes de VirtualBox prepara una **Red NAT** llamada
+`NatNetwork`, subred `10.0.2.0/24`, gateway `10.0.2.1` y DHCP desactivado.
+Selecciona **Red NAT → NatNetwork** en el adaptador 1; es un modo distinto de
+NAT simple. Comprueba primero `VBoxManage list natnetworks`: si ya existe con
+otra configuración o está en uso, acuerda el ajuste antes de modificarla.
 
 En las herramientas de red de VirtualBox crea o revisa una red solo-anfitrión.
 Ejemplo: interfaz del host `192.168.56.1/24` y DHCP desactivado para usar IP estática.
@@ -146,17 +152,19 @@ Internet por sí mismo. NAT y solo-anfitrión tienen alcances distintos.
 | Elemento | Dirección de este ejemplo | Función |
 |---|---|---|
 | Interfaz solo-anfitrión del host | 192.168.56.1/24 | Navegador, SSH y Ansible hacia el laboratorio |
-| Proxmox `vmbr0` sobre adaptador 1 NAT | 10.0.2.15/24 | Salida del nodo |
-| Gateway NAT de VirtualBox | 10.0.2.2 | Salida al exterior permitido |
-| DNS NAT de VirtualBox | 10.0.2.3 | Resolución en este ejemplo |
+| Proxmox `vmbr0` sobre adaptador 1 Red NAT | 10.0.2.15/24 | Salida del nodo |
+| Gateway de `NatNetwork` | 10.0.2.1 | Salida al exterior permitido |
+| DNS de `NatNetwork` | 10.0.2.3 | Resolución que debe comprobarse en el montaje |
 | Proxmox `vmbr1` sobre adaptador 2 | 192.168.56.10/24 | Gestión del nodo y gateway de invitados |
 | `srv-aso` en `vmbr1` | 192.168.56.20/24 | Servidor Linux |
 | `cli-linux` en `vmbr1` | 192.168.56.30/24 | Cliente Linux |
 
 Comprueba que estos rangos no colisionan con VPN u otras redes del host.
-Si tu VirtualBox usa otra configuración NAT, adapta dirección, gateway y DNS.
+Si se autoriza otro direccionamiento, actualiza conjuntamente el diagrama,
+los comandos y la configuración. Este proyecto utiliza los valores de `NatNetwork`.
 No asignes gateway a la interfaz solo-anfitrión de LliureX.
-Dentro de Proxmox solo `vmbr0` lleva el gateway por defecto.
+Dentro de Proxmox solo `vmbr0` lleva el gateway por defecto. Las tarjetas
+`nic0` y `nic1` quedan sin IP propia: sus direcciones se asignan a los puentes.
 
 ~~~mermaid
 flowchart TD
@@ -166,7 +174,7 @@ flowchart TD
     L --> C["cli-linux · .30"]
     C -->|"Samba"| S
     L -->|"Enrutamiento y NAT del nodo"| W["Proxmox vmbr0 · 10.0.2.15"]
-    W --> V["NAT VirtualBox · 10.0.2.2"]
+    W --> V["Red NAT NatNetwork · 10.0.2.1"]
     V --> I["Salida autorizada del equipo"]
 ~~~
 
@@ -175,8 +183,8 @@ flowchart TD
 1. Arranca la ISO en la consola de VirtualBox.
 2. Selecciona el VDI de la VM, revisando capacidad y resumen antes de instalar.
 3. Configura hostname como `pve-apellido.lab.test`, credenciales y zona horaria.
-4. En este ejemplo, selecciona inicialmente la interfaz NAT e introduce
-   `10.0.2.15/24`, gateway `10.0.2.2` y DNS `10.0.2.3`.
+4. Selecciona inicialmente la interfaz conectada a `NatNetwork` e introduce
+   `10.0.2.15/24`, gateway `10.0.2.1` y DNS `10.0.2.3`.
 5. Tras instalar, retira la ISO y reinicia la VM.
 6. Desde la consola de VirtualBox, configura la segunda red de Proxmox para
    poder abrir `https://192.168.56.10:8006` desde el navegador del host.
@@ -194,8 +202,9 @@ ip route
 ~~~
 
 Relaciona cada MAC con el adaptador 1/2 de VirtualBox.
-El ejemplo siguiente supone `enp0s3` para NAT y `enp0s8` para solo-anfitrión.
-**Tu versión puede usar otros nombres, por ejemplo `nic0` y `nic1`.**
+El ejemplo siguiente usa `nic0` para Red NAT y `nic1` para solo-anfitrión.
+**Tu versión puede usar otros nombres, por ejemplo `enp0s3` y `enp0s8`.**
+Sustituye los nombres tras comprobar las MAC; conserva la función de cada puente.
 
 Guarda una copia de `/etc/network/interfaces` fuera de GitHub y edítalo con
 el profesor desde la consola. Integra los cambios en el archivo existente;
@@ -207,21 +216,22 @@ Ejemplo de contenido relevante:
 auto lo
 iface lo inet loopback
 
-iface enp0s3 inet manual
-iface enp0s8 inet manual
+iface nic0 inet manual
+iface nic1 inet manual
 
 auto vmbr0
 iface vmbr0 inet static
     address 10.0.2.15/24
-    gateway 10.0.2.2
-    bridge-ports enp0s3
+    gateway 10.0.2.1
+    dns-nameservers 10.0.2.3
+    bridge-ports nic0
     bridge-stp off
     bridge-fd 0
 
 auto vmbr1
 iface vmbr1 inet static
     address 192.168.56.10/24
-    bridge-ports enp0s8
+    bridge-ports nic1
     bridge-stp off
     bridge-fd 0
 
@@ -233,6 +243,9 @@ Revisa sintaxis y aplica con `ifreload -a` desde la consola, no desde una
 Ajusta `/etc/hosts` para que el nombre del nodo resuelva a su IP de gestión
 `192.168.56.10`, no a loopback ni a otra VM; compruébalo con `hostname -f`
 y `getent hosts pve-apellido.lab.test`.
+
+Comprueba también `/etc/resolv.conf`: el servidor DNS de esta referencia es
+`10.0.2.3`. La IP de salida fija, el gateway y el DNS deben mantenerse tras reiniciar.
 
 ## 7. Salida a repositorios de los invitados
 
@@ -249,10 +262,10 @@ Para una prueba temporal, desde la consola de tu nodo:
 
 ~~~bash
 sysctl -w net.ipv4.ip_forward=1
-iptables -t nat -A POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE
+iptables -w -t nat -C POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE 2>/dev/null || iptables -w -t nat -A POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE
 ~~~
 
-Ejecuta la adición **una sola vez** y prueba desde un invitado `ip route`,
+La comprobación `-C` evita duplicar la regla. Prueba desde un invitado `ip route`,
 resolución DNS y acceso al repositorio Linux autorizado. Si el tráfico se filtra,
 consulta los registros; no desactives todo el firewall. El NAT es traducción,
 no una política completa de aislamiento.
@@ -260,15 +273,21 @@ no una política completa de aislamiento.
 Después de validar, retira la regla temporal antes de configurar su persistencia:
 
 ~~~bash
-iptables -t nat -D POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE
+iptables -w -t nat -D POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE
 ~~~
 
-Añade bajo la sección `vmbr1` del ejemplo anterior:
+Para mantener el reenvío, crea `/etc/sysctl.d/91-pi-forward.conf` con:
 
 ~~~text
-    post-up sysctl -w net.ipv4.ip_forward=1
-    post-up iptables -t nat -A POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE
-    post-down iptables -t nat -D POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE
+net.ipv4.ip_forward = 1
+~~~
+
+Aplica `sysctl -p /etc/sysctl.d/91-pi-forward.conf`. Añade bajo la sección
+`vmbr1` del ejemplo anterior los hooks de NAT:
+
+~~~text
+    post-up iptables -w -t nat -C POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE 2>/dev/null || iptables -w -t nat -A POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE
+    post-down if iptables -w -t nat -C POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE 2>/dev/null; then iptables -w -t nat -D POSTROUTING -s 192.168.56.0/24 -o vmbr0 -j MASQUERADE; fi
 ~~~
 
 Programa un reinicio limpio del nodo para verificar persistencia sin acumular
@@ -290,7 +309,7 @@ diseño. Fragmento ilustrativo de dos entradas; no es la tabla completa ni una
 salida medida en tu equipo:
 
 ~~~text
-default via 10.0.2.2 dev vmbr0
+default via 10.0.2.1 dev vmbr0
 192.168.56.0/24 dev vmbr1 proto kernel scope link src 192.168.56.10
 ~~~
 

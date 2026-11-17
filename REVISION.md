@@ -160,3 +160,13 @@ deben contrastarse al iniciar el curso.
   DOM/CDP y comprobación de píxeles no vacíos; capturas revisadas visualmente.
 - El workflow de Pages está preparado; no se ha ejecutado un despliegue remoto
   porque todavía no se ha configurado un repositorio GitHub de destino.
+
+## Unificación de red · 17/11/2026
+
+La guía, teoría, fases y comandos adoptan una sola referencia: Red NAT
+`NatNetwork`, `10.0.2.0/24`, gateway `10.0.2.1`, DNS `10.0.2.3` y DHCP
+exterior desactivado. `vmbr0` proporciona salida con `10.0.2.15/24`;
+`vmbr1` proporciona gestión y laboratorio con `192.168.56.10/24`.
+Los invitados usan `vmbr1` y gateway `192.168.56.10`. Se documentan los nombres
+reales de NIC, el reenvío persistente y los hooks NAT que evitan duplicados.
+Se retiran los valores operativos de NAT simple de la referencia vigente.

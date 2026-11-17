@@ -112,13 +112,18 @@ VBoxManage modifyvm "pve-apellido" --nicpromisc2 allow-all
 ```
 
 `--cpus` asigna CPU virtuales, sin crear núcleos físicos. NIC 1 utiliza una
-**Red NAT** ya creada; NIC 2 conecta al laboratorio host-only. `allow-all` permite
+**Red NAT `NatNetwork`** ya creada, con `10.0.2.0/24`, gateway `10.0.2.1`
+y DHCP desactivado; NIC 2 conecta al laboratorio host-only. `allow-all` permite
 recibir en esa NIC tráfico destinado a las MAC de los invitados del bridge.
 Después, vuelve a consultar `showvminfo` para comprobar los cambios.
 
-**NAT simple y Red NAT son modos diferentes.** No cambies uno por otro conservando
-sin comprobar gateway y DNS. La IP del gateway se obtiene de la red autorizada;
-no se deduce del nombre. Para la instalación física opcional, estas órdenes de VirtualBox
+En Proxmox, NIC 1 se incorpora a `vmbr0` (`10.0.2.15/24`, gateway `10.0.2.1`)
+y NIC 2 a `vmbr1` (`192.168.56.10/24`, gestión e invitados). DNS: `10.0.2.3`.
+La [guía de interfaces](../proxmox/virtualbox.md#red-local) contiene el archivo
+completo y la persistencia del reenvío y NAT.
+
+**NAT simple y Red NAT son modos diferentes.** El proyecto usa Red NAT;
+comprueba la red existente antes de aplicar estos valores. Para la instalación física opcional, estas órdenes de VirtualBox
 no se aplican. El firewall de PVE no es un objetivo de esta práctica.
 
 ### Activar y comprobar la virtualización anidada

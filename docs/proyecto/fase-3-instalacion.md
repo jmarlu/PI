@@ -14,7 +14,8 @@ Si aparece un error, conserva el mensaje para poder diagnosticarlo.
 1. Abre VirtualBox en tu equipo y registra su versión.
 2. Crea una VM Linux de 64 bits para Proxmox con CPU, RAM y VDI del diseño.
 3. Reserva recursos para el sistema anfitrión; no uses toda su RAM para la VM.
-4. Configura los adaptadores NAT y solo-anfitrión conforme al diseño local.
+4. Configura el adaptador 1 en **Red NAT `NatNetwork`** y el 2 en
+   **solo-anfitrión**, conforme al [diseño de referencia](../proxmox/virtualbox.md#red-local).
 5. Con la VM apagada, habilita virtualización anidada si está disponible y
    necesitas VMs KVM internas; comprueba luego su funcionamiento real.
 6. Monta la ISO autorizada e instala Proxmox dentro del VDI, no sobre el host.

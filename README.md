@@ -4,7 +4,9 @@ Sitio MkDocs independiente para 2.º ASIR, curso 2026-2027. Esta carpeta es
 la **raíz del repositorio que se publicará**. No hay que subir toda la carpeta PI.
 
 Modalidad virtual: Proxmox en VirtualBox en el equipo del alumno. No se cuenta
-con el Proxmox del centro. La guía local incluye recursos, interfaces y red NAT.
+con el Proxmox del centro. La guía local incluye recursos, interfaces y Red NAT `NatNetwork`.
+La referencia común es `vmbr0` de salida (`10.0.2.15/24`, gateway `10.0.2.1`)
+y `vmbr1` de gestión y laboratorio (`192.168.56.10/24`), DNS `10.0.2.3`.
 
 La teoría se concentra en Proxmox y Ansible: siete capítulos nuevos de Proxmox,
 cinco de fundamentos y técnica Ansible, y un laboratorio Ansible guiado.
