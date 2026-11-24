@@ -31,6 +31,21 @@ Comprueba además:
 - Actualizaciones aplicadas.
 - Secretos fuera del repositorio.
 
+## Revisa también las cuentas del panel de Proxmox
+
+Vuelve a la tabla de accesos de la
+[fase 4](fase-4-configuracion.md#3-revisa-quien-puede-administrar-el-nodo).
+Comprueba qué cuentas siguen siendo necesarias y si conservan el rol y el
+ámbito previstos. Si creaste la cuenta limitada, repite sus consultas
+permitida y denegada, o indica que la eliminaste al terminar el ensayo.
+Actualiza la documentación si has cambiado alguna asignación.
+
+No confundas esos permisos con los del servicio: entrar en Proxmox no
+autoriza a usar Samba ni a entrar por SSH en `srv-aso`. En el servicio,
+prueba el acceso con una cuenta autorizada y el rechazo con otra que tenga
+credenciales válidas, pero carezca del permiso necesario. Una contraseña
+incorrecta no demuestra que los permisos estén bien configurados.
+
 ## Qué guardar en tu repositorio
 
 - Puertos abiertos y justificación.

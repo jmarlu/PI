@@ -2,7 +2,14 @@
 
 ## Administrar con alcance limitado
 
-La **autenticación** comprueba tu identidad al iniciar sesión. La **autorización** determina qué acciones puedes realizar y sobre qué recursos. En Proxmox intervienen la cuenta, el dominio de autenticación o realm, el rol y la ruta del recurso al que se aplica el permiso. El realm indica dónde se comprueba la cuenta; no identifica una VM o un contenedor.
+Cuando entras en Proxmox ocurren dos cosas distintas. Primero se comprueba
+quién eres: eso es la **autenticación**. Después se decide qué puedes hacer
+y sobre qué recursos: eso es la **autorización**. Una cuenta puede entrar
+correctamente en el panel y no tener permiso para consultar un nodo.
+
+Para entender un permiso, responde a tres preguntas: **quién lo recibe,
+qué acciones permite y dónde se aplica**. También debes conocer el dominio
+de autenticación o *realm*, que indica dónde se comprueba la cuenta.
 
 Una cuenta de lectura para observar métricas no necesita permiso para borrar
 discos. Un token de API tampoco debe tener más alcance que la tarea que lo
@@ -36,6 +43,88 @@ Esta tabla define una intención de acceso; no asegura que cualquier rol llamado
 “lectura” la cumpla exactamente. Contrasta privilegios, rutas y herencia de tu
 configuración real. No cambies la cuenta administrativa principal para ensayar
 restricciones sin una vía de recuperación.
+
+## Usuarios, grupos, privilegios y roles
+
+Estos conceptos se relacionan, pero cada uno cumple una función:
+
+| Concepto | Para qué sirve | Ejemplo |
+|---|---|---|
+| Usuario | Identifica a quien entra | `alumno-lectura@pve` |
+| Realm | Indica cómo se comprueba esa identidad | `pve` usa las cuentas internas de Proxmox; `pam`, las del Linux del nodo |
+| Grupo de Proxmox | Reúne usuarios para asignarles permisos en conjunto | Un grupo de personas que supervisan el laboratorio |
+| Privilegio | Permite una acción concreta | `Sys.Audit` permite consultar el estado y la configuración del nodo |
+| Rol | Agrupa uno o varios privilegios | `AulaLectura`, creado en clase con solo `Sys.Audit` |
+| Ruta o ámbito | Delimita sobre qué recurso se concede el rol | `/nodes/pve-apellido` |
+| ACL de Proxmox | Asigna un rol a una cuenta o grupo sobre una ruta | `alumno-lectura@pve` recibe `AulaLectura` en `/nodes/pve-apellido` |
+
+En el panel se administran desde **Datacenter → Permisos** (*Permissions*).
+Los nombres de los menús pueden cambiar con el idioma o la versión.
+
+`root@pam` tiene acceso administrativo completo. Crear una cuenta en el realm
+`pve` no crea un usuario Linux ni le concede acceso SSH al nodo. Tampoco crea
+una cuenta dentro de `srv-aso`. Los grupos de Proxmox y los grupos del Linux
+invitado se gestionan por separado.
+
+Proxmox incluye roles preparados, como `Administrator` y `PVEAuditor`.
+También puedes crear uno con los privilegios que necesites. Revisa su
+contenido antes de asignarlo: ponerle el nombre «lectura» no limita sus
+acciones por sí solo.
+
+## Dónde se aplica un permiso y cómo se hereda
+
+La ruta de una ACL pertenece al árbol de recursos de Proxmox. **No es una
+carpeta del disco** y no se cambia con `chmod`.
+
+| Ruta de ejemplo | Ámbito |
+|---|---|
+| `/` | Raíz del árbol de permisos |
+| `/nodes/pve-apellido` | El nodo con ese nombre |
+| `/vms/101` | El invitado con ID 101, cuando exista |
+| `/storage/local` | El almacenamiento identificado como `local` |
+
+La opción **Propagar** hace que una asignación se herede en las rutas
+descendientes. Si concedes un rol en `/` y lo propagas, su alcance será mucho
+mayor que si lo asignas a un recurso concreto. El nodo y sus invitados tienen
+rutas distintas: un permiso sobre `/nodes/pve-apellido` no concede por sí
+solo acceso a `/vms/101`.
+
+Una cuenta puede recibir permisos directamente, por pertenecer a un grupo
+o por herencia. Si al retirar una asignación todavía puede hacer algo,
+revisa sus **permisos efectivos**, es decir, los que resultan de todas esas
+asignaciones. No basta con mirar una sola fila de la tabla de permisos.
+
+## Ejemplo: consultar el nodo sin leer sus registros
+
+Imagina que una persona de soporte solo necesita ver CPU, memoria y tiempo
+de actividad. Creamos `AulaLectura` con `Sys.Audit` y se lo asignamos a
+`alumno-lectura@pve` en `/nodes/pve-apellido`, sin propagar.
+
+| Prueba con esa cuenta | Resultado esperado | Motivo |
+|---|---|---|
+| Entrar en el panel | Permitido | La cuenta y su contraseña son válidas |
+| Consultar el estado del nodo | Permitido | Tiene `Sys.Audit` en ese nodo |
+| Leer el registro del sistema del nodo | Denegado | Le falta `Sys.Syslog` |
+| Cambiar la configuración del nodo | Denegado | No tiene `Sys.Modify` |
+| Consultar el estado tras retirar esa ACL | Denegado si no tiene otro acceso | Ya no tiene la autorización necesaria |
+
+Los requisitos de las consultas se pueden comprobar en el
+[visor oficial de la API](https://pve.proxmox.com/pve-docs/api-viewer/):
+`GET /nodes/{node}/status` y `GET /nodes/{node}/syslog`.
+
+Para probar una restricción utiliza una operación sin cambios, como la lectura
+del registro. No intentes borrar un invitado o apagar el nodo para demostrar
+que una cuenta no puede hacerlo.
+
+Una contraseña incorrecta demuestra un fallo de autenticación. Para comprobar
+los permisos necesitas entrar con credenciales válidas y obtener un rechazo
+por falta de autorización. Hazlo en una ventana privada distinta de la sesión
+administrativa: dos pestañas normales pueden compartir la cuenta de root.
+
+Encontrarás los pasos y las evidencias en
+[Usuarios y permisos de la fase 4](../proyecto/fase-4-configuracion.md#3-revisa-quien-puede-administrar-el-nodo).
+La revisión de tus accesos forma parte de esa fase; la creación de una cuenta
+limitada se realiza cuando se acuerde en clase.
 
 ## Exposición y mantenimiento del nodo
 
