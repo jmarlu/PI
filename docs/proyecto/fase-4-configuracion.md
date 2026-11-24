@@ -10,24 +10,149 @@ nodo y guarda los resultados en `docs/03-instalacion-proxmox.md`.
 
 ## 1. Revisa dónde se guardará cada cosa
 
-Abre **Datacenter > Storage** y revisa los almacenamientos disponibles.
-Anota para qué sirve cada uno, qué contenido admite y cuánto espacio queda.
-Puedes contrastarlo desde la consola del nodo:
+### Identifica los discos del nodo {#discos-del-nodo}
+
+Abre **Nodo → Discos** y localiza el disco donde instalaste Proxmox.
+En VirtualBox es el VDI conectado a la VM Proxmox; el disco físico que guarda
+ese archivo pertenece al ordenador anfitrión. Son dos niveles diferentes.
+
+Desde la **consola del nodo Proxmox**, consulta:
 
 ```bash
+lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS
+findmnt /
 pvesm status
 df -h
 ```
 
-Relaciona las salidas con el panel: un almacenamiento para discos de VM no
-tiene por qué admitir también copias o imágenes ISO. Prepara una carpeta o
-un almacenamiento que admita backups en el destino autorizado y comprueba
-que aparece disponible. La copia real se hará en la fase 9.
+Relaciona lo que ves:
+
+- `lsblk` muestra dispositivos, particiones y volúmenes. El disco puede llamarse
+  `sda`, `vda` o `nvme0n1`; identifica el tuyo por su tamaño y estructura.
+- `findmnt /` indica qué dispositivo sostiene el sistema de archivos raíz.
+  En una instalación con LVM puede mostrar un volumen lógico: sigue sus
+  dependencias en el árbol de `lsblk` hasta el disco.
+- `pvesm status` muestra los almacenamientos registrados en Proxmox.
+- `df -h` muestra sistemas de archivos montados; no es un inventario de todo
+  el espacio libre de un pool LVM-thin.
+
+Si instalaste con LVM o LVM-thin, añade estas consultas en el nodo:
+
+```bash
+pvs
+vgs
+lvs -o lv_name,vg_name,lv_size,segtype,data_percent,metadata_percent
+```
+
+Localiza el volumen del sistema y el pool, si existe. En un thin pool,
+`Data%` y `Meta%` muestran uso de datos y metadatos; no son el espacio libre
+dentro de `srv-aso`. Si elegiste otro backend, documenta su estructura real.
+
+Guarda una tabla con el nombre del dispositivo, tamaño, particiones o
+volúmenes, uso y VDI al que corresponde. Estas consultas no requieren borrar,
+formatear ni cambiar particiones.
+
+### Relaciona cada almacenamiento con su contenido
+
+Abre **Datacenter → Storage**. Selecciona cada entrada y revisa su tipo,
+contenido habilitado y ruta o pool. Después selecciona ese almacenamiento
+bajo el nodo y consulta su estado y contenido.
+
+Completa esta tabla con tus resultados, sin copiar capacidades del ejemplo:
+
+| Almacenamiento | Backend | Ruta o pool real | Disco que lo sostiene | Contenido habilitado | Espacio disponible |
+|---|---|---|---|---|---|
+| `local`, si existe | Habitualmente Directory | Comprueba si es `/var/lib/vz` | El que identifiques | Consulta su configuración | Tu resultado |
+| `local-lvm`, si existe | Habitualmente LVM-thin | Comprueba grupo y thin pool | El que identifiques | Discos de VM y volúmenes CT, según configuración | Tu resultado |
+| Destino de copias | El que hayas preparado | Ruta o destino real | Dispositivo real | Backup | Tu resultado |
+
+En una instalación típica, `local` permite guardar ISO o plantillas CT y
+`local-lvm` guarda discos de invitados. Compruébalo: los nombres no garantizan
+esa configuración. Que aparezcan dos entradas tampoco significa que tengas
+dos discos independientes.
+
+Prueba a abrir la opción de subir una ISO en un almacenamiento que admita
+ese contenido. No hace falta volver a subirla si ya está disponible.
+Explica por qué un pool LVM-thin no sirve como carpeta para guardar una ISO.
+
+### Prepara el destino de las copias
+
+Revisa si ya tienes un almacenamiento que admita **VZDump backup file**
+(`backup`) y disponga del espacio previsto. Si existe y coincide con tu diseño,
+puedes utilizarlo sin crear otro.
+
+Si el destino acordado es una carpeta del sistema del nodo, créala solo si
+no existe; por ejemplo, `/var/lib/pi-backups`. Desde la consola del nodo:
+
+```bash
+mkdir -p /var/lib/pi-backups
+findmnt -T /var/lib/pi-backups
+df -h /var/lib/pi-backups
+```
+
+Antes de usar esa ruta, comprueba que no corresponde a otro recurso de tu
+laboratorio. Regístrala en **Datacenter → Storage → Add → Directory** con
+un ID libre, por ejemplo `copias-pi`, la ruta real y contenido **VZDump backup
+file**. Limítala a tu nodo y deja **Shared** desmarcado. Si la carpeta debía
+estar en un disco adicional, comprueba primero que ese disco está montado:
+crear una carpeta no monta el disco.
+
+Repite `pvesm status` y comprueba que el destino aparece activo. Esto prepara
+el almacenamiento; la copia real se realizará en la fase 9.
 
 En VirtualBox, comprueba también el espacio libre del anfitrión. El espacio
 que ve Proxmox dentro del VDI no garantiza que el disco real pueda alojar
 su crecimiento. Si las copias van al mismo disco, deja anotado que un fallo
 de ese disco afectaría tanto al laboratorio como a sus copias.
+
+### Ampliación: añade un segundo disco virtual {#segundo-disco-virtual}
+
+Haz esta ampliación si se acuerda en clase y cabe en tu presupuesto de
+almacenamiento. Sirve para practicar la incorporación de un disco al nodo;
+no es necesario rehacer la instalación ni añadir un disco a cada invitado.
+
+1. Guarda la salida inicial de `lsblk`. Apaga Proxmox de forma ordenada y
+   comprueba que su VM está apagada en VirtualBox.
+2. En **Configuración → Almacenamiento** de esa VM, conserva el VDI de
+   instalación y añade **un disco duro nuevo** al controlador adecuado.
+   Crea un VDI, por ejemplo `pve-datos.vdi`, con la capacidad aprobada.
+   Un tamaño orientativo de 20 GiB sirve para ensayar el montaje, pero puede
+   resultar insuficiente para las copias de ambos invitados.
+3. Arranca Proxmox y repite `lsblk`. Compara antes y después para identificar
+   el disco añadido por tamaño, modelo o número de serie cuando esté
+   disponible. No des por hecho que se llama `/dev/sdb`.
+4. En **Nodo → Discos**, comprueba que ese dispositivo está sin usar y que
+   no es el del sistema. En **Discos → Directory → Create: Directory**,
+   selecciona exclusivamente el disco nuevo, el sistema de archivos `ext4`,
+   un nombre libre como `copias-disco` y **Add Storage** activado.
+   **Este paso crea un sistema de archivos y borra el contenido del dispositivo
+   elegido.** Antes de confirmar, contrasta el dispositivo con tus dos salidas
+   de `lsblk`. Si no aparece disponible o hay dudas sobre su contenido,
+   revísalo con el profesor; no uses *Wipe Disk* para forzar el proceso.
+5. Espera a que la tarea termine correctamente. En **Datacenter → Storage**,
+   revisa la entrada creada: su ruta suele ser `/mnt/pve/copias-disco`.
+   Edita su contenido para admitir **VZDump backup file**, limítala a tu nodo
+   y deja **Shared** desmarcado.
+6. Comprueba el montaje desde la consola del nodo, sustituyendo la ruta
+   si has elegido otro nombre:
+
+   ```bash
+   lsblk -f
+   findmnt --mountpoint /mnt/pve/copias-disco
+   df -h /mnt/pve/copias-disco
+   pvesm status
+   ```
+
+7. Programa un reinicio limpio del nodo y repite las comprobaciones. El
+   destino debe seguir montado en el dispositivo nuevo y aparecer activo.
+   Guarda las salidas y una captura de la configuración de VirtualBox.
+
+Dos VDI guardados en el mismo disco físico siguen dependiendo de ese disco.
+Este ejercicio separa el almacenamiento dentro del nodo, pero no demuestra
+protección frente a la pérdida del ordenador anfitrión.
+
+Apóyate en la [teoría de almacenamiento y discos](../proxmox/almacenamiento-teoria.md)
+y en el [manual oficial de almacenamiento](https://pve.proxmox.com/pve-docs/chapter-pvesm.html).
 
 ## 2. Relaciona las interfaces con tu diseño
 
@@ -219,7 +344,8 @@ que puedas administrar el nodo mientras servidor y cliente funcionan.
 
 ## Antes de pasar a la plantilla
 
-Guarda capturas legibles de red y almacenamiento, la tabla de recursos
+Guarda la identificación de discos, la tabla de almacenamientos y las
+comprobaciones del destino de copias. Añade capturas legibles de red, la tabla de recursos
 y la tabla de cuentas con su ámbito. Si has realizado el ejercicio de acceso
 limitado, añade sus pruebas permitida y denegada. Acompaña las salidas
 con una frase que indique qué has comprobado y qué queda pendiente.
